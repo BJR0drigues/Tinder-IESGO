@@ -350,7 +350,9 @@ export const AppProvider: React.FC<{ children: React.ReactNode }> = ({ children 
       clearFilters,
       verifyProfile,
       isVerifying,
-      calculateCompatibility
+      calculateCompatibility,
+      theme,
+      toggleTheme
     }}>
       {children}
     </AppContext.Provider>
