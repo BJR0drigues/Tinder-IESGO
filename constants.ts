@@ -38,7 +38,7 @@ export const MOCK_USERS: User[] = [
     email: 'julia.santos@gmail.com',
     name: 'Júlia Santos',
     age: 20,
-    course: 'Odontologia',
+    course: 'Biomedicina',
     semester: 2,
     role: UserRole.STUDENT,
     bio: 'Caloura sofrendo com lista de material. Alguém pra dividir o prejuízo? 🦷✨',
@@ -46,7 +46,7 @@ export const MOCK_USERS: User[] = [
     interests: ['Festas', 'Viagem', 'Estética', 'Instagram', 'Trote Solidário'],
     gender: Gender.FEMALE,
     verified: false,
-    shift: 'Integral', 
+    shift: 'Integral',
     intention: 'Study Date'
   },
   {
@@ -86,7 +86,7 @@ export const MOCK_USERS: User[] = [
     email: 'rodrigo.mendes@iesgo.edu.br',
     name: 'Rodrigo Mendes',
     age: 24,
-    course: 'Engenharia Civil',
+    course: 'Bacharelado em Sistema de Informação',
     semester: 8,
     role: UserRole.STUDENT,
     bio: 'Calculadora na mão e capacete na cabeça. Bora construir algo juntos? 🏗️',
