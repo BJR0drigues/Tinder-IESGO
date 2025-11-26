@@ -1,0 +1,86 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
+    <title>Tinder IESGO</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+      tailwind.config = {
+        theme: {
+          extend: {
+            colors: {
+              brand: {
+                50: '#fff0f0',
+                100: '#ffdede',
+                500: '#ff6b6b', // Coral Vibrant (Pinkish)
+                600: '#ff8e53', // Coral Vibrant (Orangeish) - Gradient End
+                900: '#c0392b',
+              },
+              iesgo: {
+                blue: '#1e3a8a', // Deep Academic Blue
+                dark: '#0f172a',
+                light: '#3b82f6',
+              },
+              paper: '#f8fafc',
+            },
+            fontFamily: {
+              sans: ['"Open Sans"', 'sans-serif'],
+              display: ['"Poppins"', 'sans-serif'],
+            },
+            animation: {
+              'orbit': 'orbit 4s linear infinite',
+            },
+            keyframes: {
+              orbit: {
+                '0%': { transform: 'rotate(0deg)' },
+                '100%': { transform: 'rotate(360deg)' },
+              }
+            }
+          },
+        },
+      }
+    </script>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700;800&family=Open+Sans:wght@300;400;500;600&display=swap" rel="stylesheet">
+    <style>
+      body { font-family: 'Open Sans', sans-serif; background-color: #f8fafc; overflow: hidden; }
+      h1, h2, h3, h4, h5, h6 { font-family: 'Poppins', sans-serif; }
+      
+      /* Hide scrollbar for Chrome, Safari and Opera */
+      .no-scrollbar::-webkit-scrollbar {
+          display: none;
+      }
+      /* Hide scrollbar for IE, Edge and Firefox */
+      .no-scrollbar {
+          -ms-overflow-style: none;  /* IE and Edge */
+          scrollbar-width: none;  /* Firefox */
+      }
+      
+      .bg-coral-gradient {
+        background: linear-gradient(135deg, #ff6b6b 0%, #ff8e53 100%);
+      }
+      
+      .bg-brand-gradient {
+        background: linear-gradient(180deg, #ff6b6b 0%, #1e3a8a 100%);
+      }
+    </style>
+  <script type="importmap">
+{
+  "imports": {
+    "react/": "https://aistudiocdn.com/react@^19.2.0/",
+    "react": "https://aistudiocdn.com/react@^19.2.0",
+    "react-dom/": "https://aistudiocdn.com/react-dom@^19.2.0/",
+    "@google/genai": "https://aistudiocdn.com/@google/genai@^1.30.0",
+    "lucide-react": "https://aistudiocdn.com/lucide-react@^0.555.0",
+    "framer-motion": "https://aistudiocdn.com/framer-motion@^12.23.24",
+    "react-router-dom": "https://aistudiocdn.com/react-router-dom@^7.9.6"
+  }
+}
+</script>
+<link rel="stylesheet" href="/index.css">
+</head>
+  <body>
+    <div id="root"></div>
+  <script type="module" src="/index.tsx"></script>
+</body>
+</html>

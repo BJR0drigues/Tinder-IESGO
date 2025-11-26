@@ -1,0 +1,8 @@
+{
+  "name": "TINDEISGO",
+  "description": "O app de conexões e encontros para a comunidade IESGO e convidados.",
+  "requestFramePermissions": [
+    "camera",
+    "microphone"
+  ]
+}
