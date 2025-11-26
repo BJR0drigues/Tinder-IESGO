@@ -60,33 +60,18 @@ export interface SwipeAction {
 
 // Lista oficial de cursos da IESGO (Formosa-GO)
 export const COURSES = [
-  // Saúde
+  'Administração',
+  'Agronomia',
+  'Bacharelado em Sistema de Informação',
   'Biomedicina',
+  'Ciências Contábeis',
+  'Direito',
   'Enfermagem',
-  'Estética e Cosmética',
   'Farmácia',
   'Fisioterapia',
   'Medicina Veterinária',
-  'Nutrição',
-  'Odontologia',
-  
-  // Humanas & Sociais
-  'Administração',
-  'Ciências Contábeis',
-  'Direito',
-  'Gestão de RH',
   'Pedagogia',
-  'Psicologia',
-
-  // Exatas & Tecnologia
-  'Agronomia',
-  'Análise e Des. de Sistemas',
-  'Engenharia Civil',
-  'Redes de Computadores',
-  'Sistemas de Informação',
-  
-  // Outros
-  'Educação Física'
+  'Psicologia'
 ];
 
 export const INTERESTS = [
@@ -94,7 +79,7 @@ export const INTERESTS = [
   'Barzinho pós-aula', 'Atlética', 'Jogos Universitários', 'Semana Acadêmica',
   'Estágio', 'Iniciação Científica', 'Monitoria', 'Horas Complementares',
   'Trote Solidário', 'Xerox', 'Cantina', 'Biblioteca',
-  
+
   // Lifestyle
   'Academia', 'Netflix', 'Viagem', 'Pets', 'Festa', 'Games', 'Música Sertaneja',
   'Rock', 'Pagode', 'Cerveja', 'Tereré', 'Café', 'Natureza'

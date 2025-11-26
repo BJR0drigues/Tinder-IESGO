@@ -312,11 +312,11 @@ export const AppProvider: React.FC<{ children: React.ReactNode }> = ({ children 
     if (c1 === c2) return { score: 85, label: `Casal ${c1}` };
 
     // Agro logic
-    const agrar = ['Agronomia', 'Medicina Veterinária', 'Zootecnia'];
+    const agrar = ['Agronomia', 'Medicina Veterinária'];
     if (agrar.includes(c1) && agrar.includes(c2)) return { score: 95, label: 'Casal Agro 🚜' };
 
     // Health
-    const health = ['Biomedicina', 'Enfermagem', 'Farmácia', 'Fisioterapia', 'Medicina Veterinária', 'Nutrição', 'Odontologia', 'Estética e Cosmética', 'Educação Física'];
+    const health = ['Biomedicina', 'Enfermagem', 'Farmácia', 'Fisioterapia', 'Medicina Veterinária'];
     if (health.includes(c1) && health.includes(c2)) return { score: 80, label: 'Plantão Juntos 🏥' };
 
     // Law + Psych
@@ -325,7 +325,7 @@ export const AppProvider: React.FC<{ children: React.ReactNode }> = ({ children 
     }
 
     // Tech
-    const tech = ['Sistemas de Informação', 'Análise e Des. de Sistemas', 'Redes de Computadores'];
+    const tech = ['Bacharelado em Sistema de Informação'];
     if (tech.includes(c1) && tech.includes(c2)) return { score: 88, label: 'Debugando o Amor 💻' };
 
     return { score: Math.floor(Math.random() * (75 - 50 + 1) + 50), label: 'Opostos se Atraem' };

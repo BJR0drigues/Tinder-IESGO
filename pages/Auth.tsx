@@ -123,7 +123,7 @@ const Auth: React.FC = () => {
       </div>
 
       <div className="absolute bottom-3 text-[10px] text-white/20 font-medium">
-        IESGO Match © 2024 Formosa-GO
+        Tinder IESGO 2025
       </div>
     </div>
   );
