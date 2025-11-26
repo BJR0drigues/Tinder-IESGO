@@ -167,15 +167,12 @@ GEMINI_API_KEY=sua_chave_aqui
 
 ---
 
-## 📄 Licença
-
-Este projeto é privado e destinado exclusivamente à comunidade IESGO. 
 
 ---
 
 ## 👨‍💻 Autor
 
-Desenvolvido com ❤️ para a comunidade IESGO - Formosa/GO
+Brayan J. Rodrigues
 
 ---
 
