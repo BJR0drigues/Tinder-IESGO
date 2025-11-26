@@ -1,12 +1,12 @@
 
 import React from 'react';
 import { useApp } from '../context/AppContext';
-import { MessageCircle, User, Zap } from 'lucide-react';
+import { MessageCircle, User, Zap, Moon, Sun } from 'lucide-react';
 import { Link, useLocation } from 'react-router-dom';
 import Logo from './Logo';
 
 const Layout: React.FC<{ children: React.ReactNode }> = ({ children }) => {
-  const { currentUser, matches } = useApp();
+  const { currentUser, matches, theme, toggleTheme } = useApp();
   const location = useLocation();
 
   if (!currentUser) return <>{children}</>;
@@ -16,19 +16,26 @@ const Layout: React.FC<{ children: React.ReactNode }> = ({ children }) => {
   const totalUnread = matches.reduce((acc, m) => acc + (m.unreadCount || 0), 0);
 
   return (
-    <div className="flex flex-col h-[100dvh] bg-white max-w-md mx-auto shadow-2xl overflow-hidden relative border-x border-slate-100 font-sans">
+    <div className="flex flex-col h-[100dvh] bg-white dark:bg-slate-900 max-w-md mx-auto shadow-2xl overflow-hidden relative border-x border-slate-100 dark:border-slate-800 font-sans transition-colors duration-300">
       {/* Header */}
-      <header className="h-16 bg-white flex items-center justify-between px-6 z-20 shrink-0 border-b border-slate-50">
+      <header className="h-16 bg-white dark:bg-slate-900 flex items-center justify-between px-6 z-20 shrink-0 border-b border-slate-50 dark:border-slate-800 transition-colors duration-300">
         <div className="flex items-center gap-3">
           <div className="w-14 h-14">
             <Logo className="w-full h-full" />
           </div>
           <div className="flex flex-col leading-none justify-center">
             <span className="font-display font-extrabold text-xl text-brand-500 tracking-tight">TINDER</span>
-            <span className="font-display font-bold text-xs text-iesgo-blue tracking-[0.2em] -mt-0.5 ml-0.5">IESGO</span>
+            <span className="font-display font-bold text-xs text-iesgo-blue dark:text-blue-400 tracking-[0.2em] -mt-0.5 ml-0.5">IESGO</span>
           </div>
         </div>
-        <div className="w-8"></div> {/* Spacer for balance if needed */}
+
+        <button
+          onClick={toggleTheme}
+          className="p-2 rounded-full bg-slate-100 dark:bg-slate-800 text-slate-600 dark:text-slate-300 hover:bg-slate-200 dark:hover:bg-slate-700 transition-colors"
+          aria-label="Alternar tema"
+        >
+          {theme === 'dark' ? <Sun className="w-5 h-5" /> : <Moon className="w-5 h-5" />}
+        </button>
       </header>
 
       {/* Content */}

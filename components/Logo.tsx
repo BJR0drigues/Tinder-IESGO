@@ -13,7 +13,7 @@ const Logo: React.FC<LogoProps> = ({ className, variant = 'default' }) => {
     <img
       src={logoSrc}
       alt="Tinder IESGO Logo"
-      className={`${className} object-contain ${variant === 'white' ? 'brightness-0 invert drop-shadow-md' : ''}`}
+      className={`${className} object-cover ${variant === 'white' ? 'brightness-0 invert drop-shadow-md' : ''}`}
       draggable={false}
     />
   );

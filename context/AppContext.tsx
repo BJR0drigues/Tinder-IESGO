@@ -30,6 +30,8 @@ interface AppContextType {
   isVerifying: boolean;
   // Gamification
   calculateCompatibility: (targetUser: User) => CompatibilityResult;
+  theme: 'light' | 'dark';
+  toggleTheme: () => void;
 }
 
 const AppContext = createContext<AppContextType | undefined>(undefined);
@@ -41,7 +43,7 @@ export const AppProvider: React.FC<{ children: React.ReactNode }> = ({ children 
   const [matches, setMatches] = useState<Match[]>([]);
   const [messages, setMessages] = useState<Record<string, Message[]>>({});
   const [loading, setLoading] = useState(true);
-  
+
   // Filter State
   const [activeFilters, setActiveFilters] = useState<string[]>([]);
   const [activeCourseFilters, setActiveCourseFilters] = useState<string[]>([]);
@@ -49,25 +51,33 @@ export const AppProvider: React.FC<{ children: React.ReactNode }> = ({ children 
   // Verification State
   const [isVerifying, setIsVerifying] = useState(false);
 
+  // Theme State
+  const [theme, setTheme] = useState<'light' | 'dark'>(() => {
+    if (typeof window !== 'undefined') {
+      return localStorage.getItem('theme') as 'light' | 'dark' || 'light';
+    }
+    return 'light';
+  });
+
   // Persistence and Initialization
   useEffect(() => {
     const initializeApp = () => {
-        try {
-            const savedUser = localStorage.getItem('iesgo_user');
-            const savedMatches = localStorage.getItem('iesgo_matches');
-            const savedMessages = localStorage.getItem('iesgo_messages');
-            const savedSwipes = localStorage.getItem('iesgo_swipes');
+      try {
+        const savedUser = localStorage.getItem('iesgo_user');
+        const savedMatches = localStorage.getItem('iesgo_matches');
+        const savedMessages = localStorage.getItem('iesgo_messages');
+        const savedSwipes = localStorage.getItem('iesgo_swipes');
 
-            if (savedUser) setCurrentUser(JSON.parse(savedUser));
-            if (savedMatches) setMatches(JSON.parse(savedMatches));
-            if (savedMessages) setMessages(JSON.parse(savedMessages));
-            if (savedSwipes) setSwipes(JSON.parse(savedSwipes));
+        if (savedUser) setCurrentUser(JSON.parse(savedUser));
+        if (savedMatches) setMatches(JSON.parse(savedMatches));
+        if (savedMessages) setMessages(JSON.parse(savedMessages));
+        if (savedSwipes) setSwipes(JSON.parse(savedSwipes));
 
-        } catch (error) {
-            console.error("Error loading persisted data", error);
-        } finally {
-            setLoading(false);
-        }
+      } catch (error) {
+        console.error("Error loading persisted data", error);
+      } finally {
+        setLoading(false);
+      }
     };
 
     initializeApp();
@@ -90,6 +100,16 @@ export const AppProvider: React.FC<{ children: React.ReactNode }> = ({ children 
   useEffect(() => {
     localStorage.setItem('iesgo_swipes', JSON.stringify(swipes));
   }, [swipes]);
+
+  useEffect(() => {
+    const root = window.document.documentElement;
+    if (theme === 'dark') {
+      root.classList.add('dark');
+    } else {
+      root.classList.remove('dark');
+    }
+    localStorage.setItem('theme', theme);
+  }, [theme]);
 
   const login = useCallback((email: string) => {
     setLoading(true);
@@ -116,16 +136,16 @@ export const AppProvider: React.FC<{ children: React.ReactNode }> = ({ children 
   }, [currentUser]);
 
   const toggleFilter = useCallback((interest: string) => {
-    setActiveFilters(prev => 
-      prev.includes(interest) 
+    setActiveFilters(prev =>
+      prev.includes(interest)
         ? prev.filter(i => i !== interest)
         : [...prev, interest]
     );
   }, []);
 
   const toggleCourseFilter = useCallback((course: string) => {
-    setActiveCourseFilters(prev => 
-      prev.includes(course) 
+    setActiveCourseFilters(prev =>
+      prev.includes(course)
         ? prev.filter(c => c !== course)
         : [...prev, course]
     );
@@ -136,23 +156,27 @@ export const AppProvider: React.FC<{ children: React.ReactNode }> = ({ children 
     setActiveCourseFilters([]);
   }, []);
 
+  const toggleTheme = useCallback(() => {
+    setTheme(prev => prev === 'light' ? 'dark' : 'light');
+  }, []);
+
   // Filter users already swiped on AND filter by interests/courses
   const potentialMatches = users.filter(u => {
     if (!currentUser) return false;
-    
+
     // Basic swipe check
     const hasSwiped = swipes.some(s => s.fromUserId === currentUser.id && s.toUserId === u.id);
     if (u.id === currentUser.id || hasSwiped) return false;
 
     // Advanced Interest Filter (OR logic: if user has ANY of the selected interests)
     if (activeFilters.length > 0) {
-        const hasCommonInterest = u.interests.some(i => activeFilters.includes(i));
-        if (!hasCommonInterest) return false;
+      const hasCommonInterest = u.interests.some(i => activeFilters.includes(i));
+      if (!hasCommonInterest) return false;
     }
 
     // Course Filter (OR logic: if user is in ANY of the selected courses)
     if (activeCourseFilters.length > 0) {
-        if (!u.course || !activeCourseFilters.includes(u.course)) return false;
+      if (!u.course || !activeCourseFilters.includes(u.course)) return false;
     }
 
     return true;
@@ -172,7 +196,7 @@ export const AppProvider: React.FC<{ children: React.ReactNode }> = ({ children 
 
     if (action === 'like' || action === 'study') {
       const isMatch = Math.random() > 0.4; // Demo logic
-      
+
       if (isMatch) {
         const newMatch: Match = {
           id: `match_${Date.now()}`,
@@ -183,12 +207,12 @@ export const AppProvider: React.FC<{ children: React.ReactNode }> = ({ children 
         };
         setMatches(prev => [newMatch, ...prev]);
         setMessages(prev => ({ ...prev, [newMatch.id]: [] }));
-        
+
         // Auto message for study date
         if (action === 'study') {
-            setTimeout(() => {
-                sendMessage(newMatch.id, "Oi! Vi que você topa um Study Date. Vamos marcar na biblioteca?");
-            }, 500);
+          setTimeout(() => {
+            sendMessage(newMatch.id, "Oi! Vi que você topa um Study Date. Vamos marcar na biblioteca?");
+          }, 500);
         }
 
         return true;
@@ -206,7 +230,7 @@ export const AppProvider: React.FC<{ children: React.ReactNode }> = ({ children 
       senderId: currentUser.id,
       content,
       timestamp: Date.now(),
-      isRead: true, 
+      isRead: true,
       type
     };
 
@@ -228,83 +252,83 @@ export const AppProvider: React.FC<{ children: React.ReactNode }> = ({ children 
 
     // Auto-reply simulation
     if (currentUser.id === 'me') {
-        setTimeout(() => {
+      setTimeout(() => {
         const replyMsg: Message = {
-            id: `msg_r_${Date.now()}`,
-            matchId,
-            senderId: 'other',
-            content: "Opa! Claro, adoraria.",
-            timestamp: Date.now(),
-            isRead: false,
-            type: 'text'
+          id: `msg_r_${Date.now()}`,
+          matchId,
+          senderId: 'other',
+          content: "Opa! Claro, adoraria.",
+          timestamp: Date.now(),
+          isRead: false,
+          type: 'text'
         };
 
         setMessages(prev => ({
-            ...prev,
-            [matchId]: [...(prev[matchId] || []), replyMsg]
+          ...prev,
+          [matchId]: [...(prev[matchId] || []), replyMsg]
         }));
-        }, 3000);
+      }, 3000);
     }
 
   }, [currentUser]);
 
   const verifyProfile = useCallback(async (selfieFile: File): Promise<{ success: boolean; message: string }> => {
     if (!currentUser) return { success: false, message: "Usuário não logado" };
-    
+
     setIsVerifying(true);
-    
+
     try {
-        const reader = new FileReader();
-        const selfieBase64Promise = new Promise<string>((resolve, reject) => {
-            reader.onload = () => resolve(reader.result as string);
-            reader.onerror = reject;
-            reader.readAsDataURL(selfieFile);
-        });
-        const selfieBase64 = await selfieBase64Promise;
+      const reader = new FileReader();
+      const selfieBase64Promise = new Promise<string>((resolve, reject) => {
+        reader.onload = () => resolve(reader.result as string);
+        reader.onerror = reject;
+        reader.readAsDataURL(selfieFile);
+      });
+      const selfieBase64 = await selfieBase64Promise;
 
-        const result = await verifyUserIdentity(currentUser.photos[0], selfieBase64);
+      const result = await verifyUserIdentity(currentUser.photos[0], selfieBase64);
 
-        if (result.verified) {
-            updateProfile({ verified: true });
-            return { success: true, message: "Verificado com sucesso!" };
-        } else {
-            return { success: false, message: result.reason || "Falha na verificação." };
-        }
+      if (result.verified) {
+        updateProfile({ verified: true });
+        return { success: true, message: "Verificado com sucesso!" };
+      } else {
+        return { success: false, message: result.reason || "Falha na verificação." };
+      }
     } catch (e) {
-        return { success: false, message: "Erro técnico na verificação." };
+      return { success: false, message: "Erro técnico na verificação." };
     } finally {
-        setIsVerifying(false);
+      setIsVerifying(false);
     }
   }, [currentUser, updateProfile]);
 
   // Fun little algorithm for the "IESGO Match" logic
   const calculateCompatibility = useCallback((targetUser: User): CompatibilityResult => {
-      if (!currentUser || !targetUser.course || !currentUser.course) return { score: 65, label: "Match Misterioso" };
+    if (!currentUser || !targetUser.course || !currentUser.course) return { score: 65, label: "Match Misterioso" };
 
-      const c1 = currentUser.course;
-      const c2 = targetUser.course;
+    const c1 = currentUser.course;
+    const c2 = targetUser.course;
 
-      // Same Course
-      if (c1 === c2) return { score: 85, label: `Casal ${c1}` };
+    // Same Course
+    if (c1 === c2) return { score: 85, label: `Casal ${c1}` };
 
-      // Agro logic
-      const agrar = ['Agronomia', 'Medicina Veterinária', 'Zootecnia'];
-      if (agrar.includes(c1) && agrar.includes(c2)) return { score: 95, label: 'Casal Agro 🚜' };
+    // Agro logic
+    const agrar = ['Agronomia', 'Medicina Veterinária', 'Zootecnia'];
+    if (agrar.includes(c1) && agrar.includes(c2)) return { score: 95, label: 'Casal Agro 🚜' };
 
-      // Health
-      const health = ['Biomedicina', 'Enfermagem', 'Farmácia', 'Fisioterapia', 'Medicina Veterinária', 'Nutrição', 'Odontologia', 'Estética e Cosmética', 'Educação Física'];
-      if (health.includes(c1) && health.includes(c2)) return { score: 80, label: 'Plantão Juntos 🏥' };
+    // Health
+    const health = ['Biomedicina', 'Enfermagem', 'Farmácia', 'Fisioterapia', 'Medicina Veterinária', 'Nutrição', 'Odontologia', 'Estética e Cosmética', 'Educação Física'];
+    if (health.includes(c1) && health.includes(c2)) return { score: 80, label: 'Plantão Juntos 🏥' };
 
-      // Law + Psych
-      if ((c1 === 'Direito' && c2 === 'Psicologia') || (c2 === 'Direito' && c1 === 'Psicologia')) {
-          return { score: 92, label: 'Debate & Terapia 🧠⚖️' };
-      }
+    // Law + Psych
+    if ((c1 === 'Direito' && c2 === 'Psicologia') || (c2 === 'Direito' && c1 === 'Psicologia')) {
+      return { score: 92, label: 'Debate & Terapia 🧠⚖️' };
+    }
 
-      // Tech
-      const tech = ['Sistemas de Informação', 'Análise e Des. de Sistemas', 'Redes de Computadores'];
-      if (tech.includes(c1) && tech.includes(c2)) return { score: 88, label: 'Debugando o Amor 💻' };
+    // Tech
+    const tech = ['Sistemas de Informação', 'Análise e Des. de Sistemas', 'Redes de Computadores'];
+    if (tech.includes(c1) && tech.includes(c2)) return { score: 88, label: 'Debugando o Amor 💻' };
 
-      return { score: Math.floor(Math.random() * (75 - 50 + 1) + 50), label: 'Opostos se Atraem' };
+    return { score: Math.floor(Math.random() * (75 - 50 + 1) + 50), label: 'Opostos se Atraem' };
   }, [currentUser]);
 
   return (
