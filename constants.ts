@@ -1,4 +1,4 @@
-import { User, UserRole, Gender } from './types';
+import { User, UserRole, Gender, CampusEvent, Achievement } from './types';
 
 export const MOCK_USERS: User[] = [
   {
@@ -117,3 +117,139 @@ export const INITIAL_USER: User = {
 };
 
 export { COURSES, INTERESTS } from './types';
+
+// ── Eventos do Campus ────────────────────────────────────────────
+const NOW = Date.now();
+const DAY = 24 * 60 * 60 * 1000;
+
+export const CAMPUS_EVENTS: CampusEvent[] = [
+  {
+    id: 'evt_1',
+    title: 'Barzinho dos Calouros',
+    description: 'Integração pra galera nova. Veteranos guiam, calouros aproveitam! Dress code: camisa do curso.',
+    location: 'Bar do Zé — Centro de Formosa',
+    date: NOW + 1 * DAY,
+    category: 'social',
+    organizer: 'Comissão de Calouros IESGO',
+    attendees: 68,
+    emoji: '🍻'
+  },
+  {
+    id: 'evt_2',
+    title: 'Churrasco da Atlética',
+    description: 'O churras tradicional pós-semana de provas. Aberto pra todos os cursos. Racha entre os presentes.',
+    location: 'Quadra Coberta da IESGO',
+    date: NOW + 2 * DAY,
+    category: 'social',
+    organizer: 'Atlética IESGO',
+    attendees: 47,
+    emoji: '🔥'
+  },
+  {
+    id: 'evt_3',
+    title: 'Workshop de TI e Startups',
+    description: 'Como montar sua startup ainda na faculdade. Cases reais de ex-alunos que empreenderam.',
+    location: 'Laboratório de Informática',
+    date: NOW + 3 * DAY,
+    category: 'academic',
+    organizer: 'Curso de Sistemas de Informação',
+    attendees: 42,
+    emoji: '💻'
+  },
+  {
+    id: 'evt_4',
+    title: 'Semana Acadêmica de Psicologia',
+    description: 'Palestras e debates sobre saúde mental universitária, ansiedade e burnout estudantil.',
+    location: 'Auditório Principal',
+    date: NOW + 5 * DAY,
+    category: 'academic',
+    organizer: 'Curso de Psicologia',
+    attendees: 89,
+    emoji: '🧠'
+  },
+  {
+    id: 'evt_5',
+    title: 'Campeonato Universitário de Futebol',
+    description: 'Disputa entre os cursos. Tabela de grupos, fase mata-mata. Direto x Agro na grande final?',
+    location: 'Campo de Futebol do Campus',
+    date: NOW + 7 * DAY,
+    category: 'sports',
+    organizer: 'DEF — Departamento de Esportes',
+    attendees: 134,
+    emoji: '⚽'
+  },
+  {
+    id: 'evt_6',
+    title: 'Noite Cultural IESGO',
+    description: 'Show de talentos, bandas ao vivo e muito pagode! A maior festa do semestre.',
+    location: 'Área Externa da IESGO',
+    date: NOW + 10 * DAY,
+    category: 'cultural',
+    organizer: 'DCE — Diretório Central dos Estudantes',
+    attendees: 203,
+    emoji: '🎵'
+  },
+  {
+    id: 'evt_7',
+    title: 'Simulado OAB — Turma Direito',
+    description: 'Simulado completo das duas fases da OAB com correção e gabarito comentado ao vivo.',
+    location: 'Sala 201 — Bloco B',
+    date: NOW + 4 * DAY,
+    category: 'academic',
+    organizer: 'Curso de Direito',
+    attendees: 56,
+    emoji: '⚖️'
+  },
+  {
+    id: 'evt_8',
+    title: 'Dia de Campo — Agronomia',
+    description: 'Visita técnica à fazenda experimental. Aberto para Agronomia e Med. Veterinária.',
+    location: 'Fazenda Experimental IESGO',
+    date: NOW + 6 * DAY,
+    category: 'academic',
+    organizer: 'Curso de Agronomia',
+    attendees: 38,
+    emoji: '🚜'
+  },
+  {
+    id: 'evt_9',
+    title: 'Torneio de Vôlei Misto',
+    description: 'Formas times mistos entre cursos! Inscrições por duplas. Prêmio pra campeões.',
+    location: 'Quadra Poliesportiva',
+    date: NOW + 8 * DAY,
+    category: 'sports',
+    organizer: 'Atlética IESGO',
+    attendees: 72,
+    emoji: '🏐'
+  },
+  {
+    id: 'evt_10',
+    title: 'Sessão de Cinema ao Ar Livre',
+    description: 'Exibição de Mulher Maravilha 84 com pipoca grátis. Traga seu cobertor!',
+    location: 'Estacionamento do Campus',
+    date: NOW + 9 * DAY,
+    category: 'cultural',
+    organizer: 'Comissão Cultural',
+    attendees: 115,
+    emoji: '🎬'
+  }
+];
+
+// ── Definições de Conquistas ────────────────────────────────────
+export const ACHIEVEMENT_DEFINITIONS: Achievement[] = [
+  { id: 'first_like', title: 'Primeiro Crush', description: 'Deu seu primeiro Like', icon: '💘' },
+  { id: 'first_match', title: 'É um Match!', description: 'Conseguiu seu primeiro Match', icon: '🎉' },
+  { id: 'first_message', title: 'Quebra-gelo', description: 'Enviou sua primeira mensagem', icon: '💬' },
+  { id: 'first_study', title: 'Study Date Marcado', description: 'Enviou um Study Date', icon: '☕' },
+  { id: 'five_matches', title: 'Popular no Campus', description: 'Conseguiu 5 Matches', icon: '⭐' },
+  { id: 'ten_likes', title: 'Coração Generoso', description: 'Deu 10 Likes', icon: '❤️' },
+  { id: 'twenty_swipes', title: 'Ativo no Campus', description: 'Fez 20 swipes', icon: '👆' },
+  { id: 'verified', title: 'Verificado IESGO', description: 'Verificou seu perfil', icon: '✅' },
+  { id: 'boost_used', title: 'No Holofote', description: 'Usou um Boost de Perfil', icon: '🚀' },
+  { id: 'event_attended', title: 'Universitário de Verdade', description: 'Confirmou presença em um evento', icon: '🎓' },
+  { id: 'agro_match', title: 'Casal Agro', description: 'Match entre alunos do Agro', icon: '🚜' },
+  { id: 'health_match', title: 'Parceiros de Plantão', description: 'Match entre alunos da Saúde', icon: '🏥' },
+  { id: 'law_psych', title: 'Debate & Terapia', description: 'Match entre Direito e Psicologia', icon: '⚖️' },
+  { id: 'night_owl', title: 'Coruja do Noturno', description: 'Encontrou alguém do mesmo turno', icon: '🦉' },
+  { id: 'study_group', title: 'Líder Acadêmico', description: 'Criou um grupo de estudos', icon: '📚' },
+];

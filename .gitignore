@@ -1,3 +1,21 @@
+# Dependências
+node_modules
+
+# Build
+.next/
+dist
+dist-ssr
+out/
+
+# Env (nunca commitar)
+.env
+.env.local
+.env.*.local
+
+# Prisma
+*.db
+*.db-journal
+
 # Logs
 logs
 *.log
@@ -7,12 +25,10 @@ yarn-error.log*
 pnpm-debug.log*
 lerna-debug.log*
 
-node_modules
-dist
-dist-ssr
-*.local
+# TypeScript
+tsconfig.tsbuildinfo
 
-# Editor directories and files
+# Editor
 .vscode/*
 !.vscode/extensions.json
 .idea
@@ -22,3 +38,6 @@ dist-ssr
 *.njsproj
 *.sln
 *.sw?
+
+# Claude Code
+.claude/

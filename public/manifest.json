@@ -1,0 +1,22 @@
+{
+  "name": "Tinder IESGO",
+  "short_name": "TinderIESGO",
+  "description": "O seu match está na sala ao lado.",
+  "start_url": "/",
+  "display": "standalone",
+  "background_color": "#080510",
+  "theme_color": "#080510",
+  "orientation": "portrait",
+  "icons": [
+    {
+      "src": "/Logo.png",
+      "sizes": "192x192",
+      "type": "image/png"
+    },
+    {
+      "src": "/Logo.png",
+      "sizes": "512x512",
+      "type": "image/png"
+    }
+  ]
+}

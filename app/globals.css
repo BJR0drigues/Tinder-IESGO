@@ -1,0 +1,120 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+/* ── Base ──────────────────────────────────────────────────────── */
+:root {
+  --font-outfit:        'Outfit', sans-serif;
+  --font-space-grotesk: 'Space Grotesk', sans-serif;
+}
+
+html, body {
+  height: 100%;
+  margin: 0;
+  padding: 0;
+  background-color: #080510;
+  color: #ffffff;
+  font-family: var(--font-outfit), sans-serif;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  overscroll-behavior: none;
+  /* Força aceleração de GPU para toda a página */
+  -webkit-transform: translateZ(0);
+  transform: translateZ(0);
+}
+
+/* Imagens: desativa seleção acidental no swipe */
+img { -webkit-user-drag: none; user-select: none; -webkit-tap-highlight-color: transparent; }
+
+/* Botões: remove delay de toque no mobile (300ms tap delay) */
+button, a { touch-action: manipulation; -webkit-tap-highlight-color: transparent; }
+
+/* Reduz backdrop-blur em mobile para ganhar performance */
+@media (max-width: 768px) {
+  .backdrop-blur-xl { backdrop-filter: blur(8px); -webkit-backdrop-filter: blur(8px); }
+  .backdrop-blur-sm { backdrop-filter: blur(4px); -webkit-backdrop-filter: blur(4px); }
+}
+
+/* Altura real do viewport no mobile (sem browser chrome) */
+.h-screen-real {
+  height: 100vh;
+  height: 100dvh;
+}
+.min-h-screen-real {
+  min-height: 100vh;
+  min-height: 100dvh;
+}
+
+/* ── Scrollbar ──────────────────────────────────────────────────── */
+.no-scrollbar::-webkit-scrollbar { display: none; }
+.no-scrollbar { -ms-overflow-style: none; scrollbar-width: none; }
+
+::-webkit-scrollbar { width: 4px; }
+::-webkit-scrollbar-track { background: transparent; }
+::-webkit-scrollbar-thumb { background: #2e2a42; border-radius: 4px; }
+
+/* ── Gradients ──────────────────────────────────────────────────── */
+.bg-gradient-brand {
+  background: linear-gradient(135deg, #F07070 0%, #A06090 100%);
+}
+.bg-gradient-full {
+  background: linear-gradient(135deg, #F07070 0%, #A06090 50%, #304080 100%);
+}
+.bg-gradient-progress {
+  background: linear-gradient(90deg, #F07070 0%, #A06090 100%);
+}
+
+/* ── Slider customization ───────────────────────────────────────── */
+input[type="range"] {
+  -webkit-appearance: none;
+  height: 6px;
+  border-radius: 999px;
+  cursor: pointer;
+}
+input[type="range"]::-webkit-slider-thumb {
+  -webkit-appearance: none;
+  width: 20px;
+  height: 20px;
+  border-radius: 50%;
+  background: #F07070;
+  cursor: pointer;
+  box-shadow: 0 0 10px rgba(240, 112, 112, 0.5);
+  transition: transform 0.15s;
+}
+input[type="range"]::-webkit-slider-thumb:hover { transform: scale(1.15); }
+
+/* ── Card swipe animations ──────────────────────────────────────── */
+@keyframes swipeLeft {
+  to { transform: translateX(-120%) rotate(-20deg); opacity: 0; }
+}
+@keyframes swipeRight {
+  to { transform: translateX(120%) rotate(20deg); opacity: 0; }
+}
+@keyframes swipeUp {
+  to { transform: translateY(-120%) scale(0.8); opacity: 0; }
+}
+.swipe-left  { animation: swipeLeft  0.4s ease-out forwards; }
+.swipe-right { animation: swipeRight 0.4s ease-out forwards; }
+.swipe-up    { animation: swipeUp    0.4s ease-out forwards; }
+
+/* ── Match popup ────────────────────────────────────────────────── */
+@keyframes matchPop {
+  0%   { transform: scale(0.5); opacity: 0; }
+  70%  { transform: scale(1.05); }
+  100% { transform: scale(1); opacity: 1; }
+}
+.match-pop { animation: matchPop 0.5s cubic-bezier(0.175, 0.885, 0.32, 1.275) forwards; }
+
+/* ── Toggle switch fix ──────────────────────────────────────────── */
+.toggle-thumb {
+  position: absolute;
+  top: 2px;
+  left: 2px;
+  width: 20px;
+  height: 20px;
+  border-radius: 50%;
+  background: white;
+  transition: transform 0.2s;
+  box-shadow: 0 1px 4px rgba(0,0,0,0.3);
+}
+.toggle-active .toggle-thumb { transform: translateX(20px); }

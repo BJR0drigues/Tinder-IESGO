@@ -1,139 +1,124 @@
-# 🔥 Tinder IESGO
+# Tinder IESGO
 
-<div align="center">
+Aplicativo de conexões sociais universitárias do IESGO — Formosa, GO. Desenvolvido com Next.js 14 (App Router), Prisma ORM e SQLite.
 
-  
-  <br />
-  
-  <p align="center">
-    <strong>Conectando a comunidade acadêmica da IESGO de forma inteligente e divertida.</strong>
-  </p>
+## Stack Tecnológica
 
-  <p align="center">
-    <a href="https://www.typescriptlang.org/">
-      <img src="https://img.shields.io/badge/TypeScript-5.0+-blue?style=for-the-badge&logo=typescript&logoColor=white" alt="TypeScript" />
-    </a>
-    <a href="https://react.dev/">
-      <img src="https://img.shields.io/badge/React-19-61DAFB?style=for-the-badge&logo=react&logoColor=black" alt="React" />
-    </a>
-    <a href="https://vitejs.dev/">
-      <img src="https://img.shields.io/badge/Vite-6.0+-646CFF?style=for-the-badge&logo=vite&logoColor=white" alt="Vite" />
-    </a>
-    <a href="https://tailwindcss.com/">
-      <img src="https://img.shields.io/badge/Tailwind_CSS-3.4-38B2AC?style=for-the-badge&logo=tailwind-css&logoColor=white" alt="Tailwind CSS" />
-    </a>
-  </p>
-</div>
+| Camada | Tecnologia |
+|--------|-----------|
+| Framework | Next.js 14 (App Router) |
+| Banco de Dados | SQLite via Prisma ORM |
+| Autenticação | JWT em cookie httpOnly (`iesgo_session`) via `jose` |
+| E-mail | nodemailer (SMTP Gmail) com fallback dev |
+| Estilo | Tailwind CSS com design system próprio |
+| Fontes | Space Grotesk + Outfit (Google Fonts) |
+| Animações | Framer Motion |
 
----
+## Funcionalidades
 
-## � Sobre o Projeto
+- **Cadastro em 15 etapas** — nome, contato, OTP, nascimento, gênero, preferências, bio, fotos, interesses, intenção, preferências de busca e notificações
+- **Autenticação por OTP** — código de 6 dígitos enviado por e-mail; em dev o código aparece visualmente na tela
+- **Algoritmo de Match** — compatibilidade baseada em curso, turno, interesses e intenção (score 0–99%)
+- **Feed estilo Tinder** — foto ocupa 100% do card; botões X / ⚡ / ❤️ sobrepostos; arrastar para curtir ou passar
+- **Matches e Chat** — lista de matches com chat em tempo real por conversa
+- **Eventos do Campus** — lista de eventos com chat e lista de participantes por evento; criação de novos eventos
+- **Perfil completo** — carrossel de fotos, banner editável, bio e interesses editáveis, estatísticas e conquistas
+- **Responsivo** — layout desktop (top nav + 2 colunas) e mobile (bottom nav) sem quebrar usabilidade
 
-O **Tinder IESGO** é uma plataforma exclusiva de conexões desenvolvida para estudantes, professores e colaboradores do **Instituto de Ensino Superior de Goiás (IESGO)**. 
+## Design System
 
-Mais do que um app de namoro, é uma ferramenta para fortalecer a comunidade acadêmica, permitindo encontrar parceiros de estudo, novas amizades ou aquele "match" especial, tudo dentro de um ambiente seguro e verificado.
+- Tema escuro: fundo `#080510`
+- Coral `#F07070` · Roxo `#A06090` · Marinho `#304080`
+- Gradiente: coral → roxo → marinho
 
----
-
-## ✨ Funcionalidades Principais
-
-- 🎴 **Smart Swipe**: Interface fluida e intuitiva para navegar entre perfis.
-- 🎓 **Filtros Acadêmicos**: Encontre pessoas pelo curso, turno ou interesses em comum.
-- 🤖 **IA Icebreaker**: Integração com **Google Gemini AI** para sugerir mensagens criativas e quebrar o gelo.
-- ✅ **Verificação Real**: Sistema de segurança com verificação facial para garantir que todos os perfis são reais.
-- 📊 **Algoritmo de Compatibilidade**: Cálculo inteligente de afinidade baseado em cursos e interesses (ex: *Direito + Psicologia = Debate & Terapia*).
-- 📚 **Modo Study Date**: Uma funcionalidade exclusiva para quem busca companhia para estudar na biblioteca ou fazer trabalhos em grupo.
-
----
-
-## 🚀 Começando
-
-Siga estas instruções para configurar o projeto em sua máquina local.
-
-### Pré-requisitos
-
-- **Node.js** (Versão LTS recomendada)
-- **npm** ou **yarn**
-- Sistema Operacional: Linux, macOS ou Windows
-
-### Instalação e Execução
-
-1. **Clone o repositório**
-   ```bash
-   git clone https://github.com/BJR0drigues/IESGO-MATCH.git
-   cd IESGO-MATCH
-   ```
-
-2. **Configure o Ambiente (Linux/Mac)**
-   Recomendamos o uso do `nvm` para gerenciar a versão do Node.js e evitar erros de permissão.
-   ```bash
-   # Carrega o NVM e instala a versão LTS do Node
-   export NVM_DIR="$HOME/.nvm" && [ -s "$NVM_DIR/nvm.sh" ] && \. "$NVM_DIR/nvm.sh"
-   nvm install --lts
-   nvm use --lts
-   ```
-
-3. **Instale as Dependências**
-   ```bash
-   npm install
-   ```
-
-4. **Inicie o Servidor de Desenvolvimento**
-   ```bash
-   npm run dev
-   ```
-   
-   O aplicativo estará disponível em: `http://localhost:5173`
-
----
-
-## 🛠️ Stack Tecnológica
-
-| Categoria | Tecnologias |
-|-----------|-------------|
-| **Frontend** | React 19, TypeScript, Vite |
-| **Estilização** | Tailwind CSS, CSS Modules |
-| **Animações** | Framer Motion |
-| **Ícones** | Lucide React |
-| **Inteligência Artificial** | Google Gemini API |
-| **Roteamento** | React Router DOM |
-
----
-
-## 📂 Estrutura do Projeto
+## Estrutura de Arquivos
 
 ```
-IESGO-MATCH/
-├── 📁 components/      # Componentes de UI reutilizáveis (Botões, Cards, Modais)
-├── 📁 context/         # Gerenciamento de estado global (Context API)
-├── 📁 pages/           # Páginas da aplicação (Feed, Login, Perfil)
-├── 📁 services/        # Integrações com APIs externas (Gemini AI)
-├── 📄 App.tsx          # Componente raiz e configuração de rotas
-├── 📄 main.tsx         # Ponto de entrada da aplicação
-└── 📄 index.html       # Template HTML principal
+app/
+  (auth)/
+    login/         → Tela de login com OTP
+    register/      → Cadastro em 15 etapas (2 colunas no desktop)
+  (app)/
+    feed/          → Feed de descoberta (foto 100% do card)
+    matches/       → Matches e chat
+    events/        → Eventos, chat por evento, participantes, criar evento
+    profile/       → Perfil, edição, estatísticas, conquistas
+  api/
+    auth/          → send-otp, verify-otp, register, login, logout, me
+    users/feed     → Feed filtrado e ordenado por compatibilidade
+    swipe/         → Swipe + detecção de match
+    matches/       → Lista de matches
+    messages/      → Chat por match
+    profile/       → Atualizar perfil
+    events/        → CRUD de eventos
+    events/[id]/messages     → Chat do evento
+    events/[id]/participants → Participantes do evento
+components/
+  AppShell.tsx     → Layout (top nav desktop + bottom nav mobile)
+context/
+  AppContext.tsx   → Estado global
+lib/
+  auth.ts          → JWT / sessão
+  email.ts         → OTP por e-mail + fallback dev
+  match-algorithm.ts → Algoritmo de compatibilidade
+prisma/
+  schema.prisma    → Modelos do banco de dados
+  seed.ts          → 6 usuários + 6 eventos de exemplo
+public/
+  Logo.png         → Logotipo oficial
 ```
 
+## Instalação
+
+```bash
+# Instalar dependências
+npm install --legacy-peer-deps
+
+# Sincronizar banco de dados
+npx prisma db push
+
+# Popular com dados de teste
+npm run prisma:seed
+
+# Rodar em desenvolvimento
+npm run dev
+```
+
+Acesse em `http://localhost:3000`.
+
+## Variáveis de Ambiente (`.env`)
+
+```env
+DATABASE_URL="file:./prisma/dev.db"
+JWT_SECRET="sua-chave-secreta"
+SMTP_HOST="smtp.gmail.com"
+SMTP_PORT="587"
+SMTP_USER="seu-email@gmail.com"
+SMTP_PASS="sua-senha-de-app-gmail"
+SMTP_FROM="Tinder IESGO <seu-email@gmail.com>"
+```
+
+Em desenvolvimento, o código OTP é exibido diretamente na tela — SMTP não é obrigatório para testar.
+
+## Modelos do Banco de Dados
+
+| Modelo | Descrição |
+|--------|-----------|
+| `User` | Perfil completo, fotos em base64, interesses em JSON |
+| `OTPCode` | Códigos de verificação com expiração de 10 min |
+| `SwipeAction` | Histórico de swipes (curtir / passar / study date) |
+| `Match` | Pares de match mútuo |
+| `Message` | Mensagens por match |
+| `CampusEvent` | Eventos do campus |
+| `EventMessage` | Chat do evento |
+| `EventAttendance` | Confirmações de presença |
+| `UserStats` | Estatísticas: likes, matches, mensagens, boosts |
+| `UserAchievement` | Conquistas desbloqueadas |
+
+## Localização
+
+Fixada em **Formosa, Goiás** — todos os perfis e eventos pertencem ao campus IESGO.
+
 ---
 
-## 🤝 Contribuição
-
-Contribuições são sempre bem-vindas! Se você tem uma ideia para melhorar o app:
-
-1. Faça um **Fork** do projeto.
-2. Crie uma **Branch** para sua feature (`git checkout -b feature/IncrívelFeature`).
-3. Faça o **Commit** de suas mudanças (`git commit -m 'Add: IncrívelFeature'`).
-4. Faça o **Push** para a Branch (`git push origin feature/IncrívelFeature`).
-5. Abra um **Pull Request**.
-
----
-
-## 📄 Licença
-
-Este projeto é proprietário e destinado exclusivamente para uso educacional e recreativo da comunidade IESGO.
-
----
-
-<div align="center">
-  <p>Desenvolvido com 💙 para a IESGO</p>
-  <sub>Copyright © 2025 Tinder IESGO</sub>
-</div>
+Projeto desenvolvido para a disciplina de **Estrutura de Dados** — IESGO, 2025.

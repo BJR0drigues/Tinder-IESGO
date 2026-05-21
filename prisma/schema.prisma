@@ -1,0 +1,239 @@
+// Prisma Schema — Tinder IESGO
+// Backend: Next.js App Router | DB: MySQL
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "mysql"
+  url      = env("DATABASE_URL")
+}
+
+// ── Usuário ──────────────────────────────────────────────────────
+model User {
+  id           String   @id @default(cuid())
+  // Contato
+  email        String?  @unique
+  phone        String?  @unique
+  contactType  String   @default("email") // "email" | "phone"
+  // Nome
+  firstName    String
+  lastName     String?
+  // Perfil pessoal
+  dateOfBirth  DateTime
+  gender       String   // Mulher | Homem | Não-binário | Outro
+  pronouns     String?  // she/her | he/him | they/them | custom
+  showGender   Boolean  @default(true)
+  // Preferências de match — VarChar suficiente (lista pequena de enum)
+  lookingFor   String   @default("[]") @db.VarChar(500) // JSON: ["Mulheres","Homens",...]
+  // Bio & Interesses
+  bio          String?  @db.Text
+  bioTone      String?  // descontraido | direto | filosofico | humoristico
+  interests    String   @default("[]") @db.VarChar(1000) // JSON: string[]
+  // Fotos (base64 JSON array) — nullable, app retorna [] quando null
+  photos       String?  @db.LongText
+  bannerPhoto  String?  @db.LongText
+  // Acadêmico
+  course       String?
+  semester     Int?
+  shift        String?  // Matutino | Vespertino | Noturno | Integral
+  // Intenção
+  intention    String?  // Relacionamento sério | Amizades & conexões | Casual | Prefiro não dizer
+  // Preferências de busca
+  city         String?
+  state        String?
+  maxDistance  Int      @default(35)
+  minAge       Int      @default(18)
+  maxAge       Int      @default(30)
+  // Notificações
+  notifMatch   Boolean  @default(true)
+  notifMessage Boolean  @default(true)
+  notifLike    Boolean  @default(false)
+  // Conta
+  role         String   @default("STUDENT") // STUDENT | TEACHER | STAFF
+  verified     Boolean  @default(false)
+  isActive     Boolean  @default(true)
+  passwordHash String?
+  createdAt    DateTime @default(now())
+  updatedAt    DateTime @updatedAt
+
+  // ── Relações ──
+  otpCodes            OTPCode[]
+  sentSwipes          SwipeAction[]       @relation("SwipeFrom")
+  receivedSwipes      SwipeAction[]       @relation("SwipeTo")
+  matchesAsUser1      Match[]             @relation("MatchUser1")
+  matchesAsUser2      Match[]             @relation("MatchUser2")
+  sentMessages        Message[]
+  achievements        UserAchievement[]
+  eventAttendances    EventAttendance[]
+  studyGroupMembers   StudyGroupMember[]
+  createdStudyGroups  StudyGroup[]
+  boosts              ProfileBoost[]
+  stats               UserStats?
+  eventMessages       EventMessage[]
+}
+
+// ── OTP (verificação de email/celular) ───────────────────────────
+model OTPCode {
+  id        String   @id @default(cuid())
+  userId    String?
+  contact   String   // email ou telefone
+  type      String   // "email" | "phone"
+  code      String
+  expiresAt DateTime
+  used      Boolean  @default(false)
+  createdAt DateTime @default(now())
+
+  user      User?    @relation(fields: [userId], references: [id], onDelete: Cascade)
+}
+
+// ── Swipe ────────────────────────────────────────────────────────
+model SwipeAction {
+  id         String   @id @default(cuid())
+  fromUserId String
+  toUserId   String
+  action     String   // "like" | "pass" | "study"
+  createdAt  DateTime @default(now())
+
+  fromUser   User     @relation("SwipeFrom", fields: [fromUserId], references: [id], onDelete: Cascade)
+  toUser     User     @relation("SwipeTo",   fields: [toUserId],   references: [id], onDelete: Cascade)
+
+  @@unique([fromUserId, toUserId])
+}
+
+// ── Match ────────────────────────────────────────────────────────
+model Match {
+  id        String    @id @default(cuid())
+  user1Id   String
+  user2Id   String
+  type      String?   // "study" | null (regular)
+  createdAt DateTime  @default(now())
+
+  user1     User      @relation("MatchUser1", fields: [user1Id], references: [id], onDelete: Cascade)
+  user2     User      @relation("MatchUser2", fields: [user2Id], references: [id], onDelete: Cascade)
+  messages  Message[]
+
+  @@unique([user1Id, user2Id])
+}
+
+// ── Mensagem ─────────────────────────────────────────────────────
+model Message {
+  id        String   @id @default(cuid())
+  matchId   String
+  senderId  String
+  content   String   @db.Text
+  type      String   @default("text") // "text" | "image" | "icebreaker"
+  isRead    Boolean  @default(false)
+  createdAt DateTime @default(now())
+
+  match     Match    @relation(fields: [matchId],  references: [id], onDelete: Cascade)
+  sender    User     @relation(fields: [senderId], references: [id], onDelete: Cascade)
+}
+
+// ── Conquistas ───────────────────────────────────────────────────
+model UserAchievement {
+  id            String   @id @default(cuid())
+  userId        String
+  achievementId String
+  unlockedAt    DateTime @default(now())
+
+  user          User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@unique([userId, achievementId])
+}
+
+// ── Eventos do Campus ────────────────────────────────────────────
+model CampusEvent {
+  id          String   @id @default(cuid())
+  title       String
+  description String   @db.Text
+  location    String
+  date        DateTime
+  category    String   // "social" | "academico" | "esportes" | "cultural"
+  organizer   String
+  attendees   Int      @default(0)
+  emoji       String?
+  isActive    Boolean  @default(true)
+  createdAt   DateTime @default(now())
+
+  attendances EventAttendance[]
+  messages    EventMessage[]
+}
+
+// ── Mensagens de Evento ───────────────────────────────────────────
+model EventMessage {
+  id        String      @id @default(cuid())
+  eventId   String
+  userId    String
+  content   String      @db.Text
+  createdAt DateTime    @default(now())
+
+  event     CampusEvent @relation(fields: [eventId], references: [id], onDelete: Cascade)
+  user      User        @relation(fields: [userId],  references: [id], onDelete: Cascade)
+}
+
+model EventAttendance {
+  id        String      @id @default(cuid())
+  userId    String
+  eventId   String
+  createdAt DateTime    @default(now())
+
+  user      User        @relation(fields: [userId],  references: [id], onDelete: Cascade)
+  event     CampusEvent @relation(fields: [eventId], references: [id], onDelete: Cascade)
+
+  @@unique([userId, eventId])
+}
+
+// ── Grupos de Estudo ─────────────────────────────────────────────
+model StudyGroup {
+  id           String   @id @default(cuid())
+  name         String
+  course       String
+  subject      String
+  maxMembers   Int
+  location     String
+  scheduledAt  DateTime
+  createdById  String
+  createdAt    DateTime @default(now())
+
+  createdBy    User     @relation(fields: [createdById], references: [id], onDelete: Cascade)
+  members      StudyGroupMember[]
+}
+
+model StudyGroupMember {
+  id       String     @id @default(cuid())
+  groupId  String
+  userId   String
+  joinedAt DateTime   @default(now())
+
+  group    StudyGroup @relation(fields: [groupId], references: [id], onDelete: Cascade)
+  user     User       @relation(fields: [userId],  references: [id], onDelete: Cascade)
+
+  @@unique([groupId, userId])
+}
+
+// ── Boost de Perfil ──────────────────────────────────────────────
+model ProfileBoost {
+  id        String   @id @default(cuid())
+  userId    String
+  usedAt    DateTime @default(now())
+  expiresAt DateTime
+
+  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+}
+
+// ── Estatísticas do usuário ──────────────────────────────────────
+model UserStats {
+  id               String @id @default(cuid())
+  userId           String @unique
+  likesGiven       Int    @default(0)
+  passesGiven      Int    @default(0)
+  studyDatesGiven  Int    @default(0)
+  matchCount       Int    @default(0)
+  messagesSent     Int    @default(0)
+  boostsUsed       Int    @default(0)
+  eventsAttended   Int    @default(0)
+
+  user             User   @relation(fields: [userId], references: [id], onDelete: Cascade)
+}

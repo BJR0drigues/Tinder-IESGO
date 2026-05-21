@@ -58,6 +58,58 @@ export interface SwipeAction {
   timestamp: number;
 }
 
+// ── Novos Sistemas ──────────────────────────────────────────────
+
+export interface Achievement {
+  id: string;
+  title: string;
+  description: string;
+  icon: string;
+  unlockedAt?: number;
+}
+
+export type EventCategory = 'social' | 'academic' | 'sports' | 'cultural';
+
+export interface CampusEvent {
+  id: string;
+  title: string;
+  description: string;
+  location: string;
+  date: number; // timestamp
+  category: EventCategory;
+  organizer: string;
+  attendees: number;
+  emoji: string;
+}
+
+export interface StudyGroup {
+  id: string;
+  name: string;
+  course: string;
+  subject: string;
+  members: string[]; // user IDs
+  maxMembers: number;
+  location: string;
+  scheduledAt: number; // timestamp
+  createdBy: string;
+}
+
+export interface UserStats {
+  likesGiven: number;
+  passesGiven: number;
+  studyDatesGiven: number;
+  matchCount: number;
+  messagesSent: number;
+  boostsUsed: number;
+  eventsAttended: number;
+}
+
+export interface BoostState {
+  active: boolean;
+  usedAt: number | null;
+  expiresAt: number | null;
+}
+
 // Lista oficial de cursos da IESGO (Formosa-GO)
 export const COURSES = [
   'Administração',

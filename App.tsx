@@ -6,6 +6,7 @@ import Auth from './pages/Auth';
 import Feed from './pages/Feed';
 import Matches from './pages/Matches';
 import Profile from './pages/Profile';
+import Events from './pages/Events';
 
 const ProtectedRoute: React.FC<{ children: React.ReactNode }> = ({ children }) => {
   const { currentUser, loading } = useApp();
@@ -49,7 +50,13 @@ const AppRoutes = () => {
                     <Profile />
                 </ProtectedRoute>
             } />
-            
+
+            <Route path="/events" element={
+                <ProtectedRoute>
+                    <Events />
+                </ProtectedRoute>
+            } />
+
             <Route path="/" element={<Navigate to="/feed" replace />} />
         </Routes>
     );
