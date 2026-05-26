@@ -1,1 +1,115 @@
-<!-- Tinder IESGO — BJR0drigues -->\n\n<div align=\"center\">\n\n```\n╔══════════════════════════════════════════════════════════════╗\n║                                                              ║\n║   >_  TINDER IESGO  //  Brayan J. Rodrigues                  ║\n║   ──────────────────────────────────────────────────────     ║\n║   stack  : Next.js 14 · Prisma · SQLite · JWT · Tailwind     ║\n║   scope  : App fullstack — conexões universitárias IESGO      ║\n║   status : ██████████████████████░░  EM DESENVOLVIMENTO        ║\n║                                                              ║\n╚══════════════════════════════════════════════════════════════╝\n```\n\n![Status](https://img.shields.io/badge/status-em_desenvolvimento-e53935?style=flat-square)\n![Next.js](https://img.shields.io/badge/Next.js_14-0a0a0a?style=flat-square&logo=next.js&logoColor=white)\n![TypeScript](https://img.shields.io/badge/TypeScript-0a0a0a?style=flat-square&logo=typescript&logoColor=3178c6)\n![Prisma](https://img.shields.io/badge/Prisma-0a0a0a?style=flat-square&logo=prisma&logoColor=white)\n![SQLite](https://img.shields.io/badge/SQLite-0a0a0a?style=flat-square&logo=sqlite&logoColor=white)\n![Tailwind CSS](https://img.shields.io/badge/Tailwind_CSS-0a0a0a?style=flat-square&logo=tailwindcss&logoColor=06b6d4)\n![JWT](https://img.shields.io/badge/JWT-0a0a0a?style=flat-square&logo=jsonwebtokens&logoColor=white)\n\n</div>\n\n---\n\n## `$ cat sobre.txt`\n\nApp fullstack de conexões sociais para estudantes do **IESGO — Formosa, GO**. Inspirado no Tinder, mas adaptado para o contexto universitário: match por curso, turno e interesses acadêmicos, chat em tempo real e eventos do campus.\n\nProjeto real com foco em UX, arquitetura de API REST e algoritmo de compatibilidade próprio.\n\n---\n\n## `$ ls -la features/`\n\n### Autenticação\n- [x] Cadastro em **15 etapas** com stepper visual\n- [x] Login via **OTP por e-mail** (código de 6 dígitos, expira em 10 min)\n- [x] Sessão por **JWT em cookie httpOnly** (`iesgo_session`)\n- [x] Fallback dev: OTP exibido na tela sem SMTP configurado\n\n### Feed e Match\n- [x] **Feed estilo Tinder** — foto ocupa 100% do card\n- [x] Gestos: arrastar para curtir/passar, botões X / ⚡ / ❤️\n- [x] **Algoritmo de compatibilidade** por curso, turno, interesses e intenção (score 0–99%)\n- [x] Detecção automática de match mútuo\n- [x] Filtros de busca por gênero e intenção\n\n### Social\n- [x] Lista de matches com **chat por conversa**\n- [x] **Eventos do campus** — criar, listar, participar\n- [x] Chat por evento + lista de participantes\n- [x] Perfil completo com carrossel de fotos e bio editável\n- [x] Banner editável, interesses e estatísticas\n- [x] Conquistas desbloqueadas por uso\n\n### UI/UX\n- [x] Design system próprio (tema escuro, coral + roxo + marinho)\n- [x] Layout **responsivo**: top nav desktop / bottom nav mobile\n- [x] Animações com Framer Motion\n- [x] Fontes: Space Grotesk + Outfit\n\n---\n\n## `$ ls -la stack/`\n\n| Camada | Tecnologia | Detalhe |\n|--------|------------|---------|\n| Framework | Next.js 14 | App Router, Server Components, API Routes |\n| Banco de Dados | SQLite via Prisma ORM | Schema com 10 modelos relacionados |\n| Autenticação | JWT + jose | Cookie httpOnly, OTP por e-mail |\n| E-mail | nodemailer | SMTP Gmail + fallback dev (OTP na tela) |\n| Estilo | Tailwind CSS | Design system próprio, dark theme |\n| Animações | Framer Motion | Swipe, transições, feedback visual |\n| Tipografia | Google Fonts | Space Grotesk + Outfit |\n\n---\n\n## `$ cat screenshots.txt`\n\n```\n[ tela de login com OTP ]          → /screenshots/login.png\n[ cadastro 15 etapas — desktop ]   → /screenshots/register-desktop.png\n[ feed de descoberta ]             → /screenshots/feed.png\n[ tela de matches ]                → /screenshots/matches.png\n[ eventos do campus ]              → /screenshots/events.png\n[ perfil completo ]                → /screenshots/profile.png\n\n// screenshots serão adicionadas em breve\n```\n\n---\n\n## `$ cat instalacao.txt`\n\n```bash\n# 1. clonar\ngit clone https://github.com/BJR0drigues/Tinder-IESGO.git\ncd Tinder-IESGO\n\n# 2. instalar dependências\nnpm install --legacy-peer-deps\n\n# 3. configurar variáveis de ambiente\ncp .env.example .env\n# editar .env com suas credenciais\n\n# 4. criar banco de dados\nnpx prisma db push\n\n# 5. popular com dados de teste (6 usuários + 6 eventos)\nnpm run prisma:seed\n\n# 6. rodar em desenvolvimento\nnpm run dev\n```\n\nAcesse em `http://localhost:3000`.\n\n> Em desenvolvimento o código OTP aparece visualmente na tela de login — SMTP não é obrigatório.\n\n---\n\n## `$ cat env.txt`\n\n```env\n# banco de dados\nDATABASE_URL=\"file:./prisma/dev.db\"\n\n# autenticacao\nJWT_SECRET=\"sua-chave-secreta-aqui\"\n\n# email (opcional em dev)\nSMTP_HOST=\"smtp.gmail.com\"\nSMTP_PORT=\"587\"\nSMTP_USER=\"seu-email@gmail.com\"\nSMTP_PASS=\"sua-senha-de-app-gmail\"\nSMTP_FROM=\"Tinder IESGO <seu-email@gmail.com>\"\n```\n\n---\n\n## `$ cat modelos-db.txt`\n\n| Modelo | Descrição |\n|--------|----------|\n| `User` | Perfil completo, fotos em base64, interesses em JSON |\n| `OTPCode` | Códigos de verificação com expiração de 10 min |\n| `SwipeAction` | Histórico de swipes (curtir / passar / study date) |\n| `Match` | Pares de match mútuo |\n| `Message` | Mensagens por match |\n| `CampusEvent` | Eventos do campus |\n| `EventMessage` | Chat do evento |\n| `EventAttendance` | Confirmações de presença |\n| `UserStats` | Estatísticas: likes, matches, mensagens, boosts |\n| `UserAchievement` | Conquistas desbloqueadas |\n\n---\n\n## `$ tree src/`\n\n```\napp/\n  (auth)/\n    login/         → Tela de login com OTP\n    register/      → Cadastro em 15 etapas (2 colunas no desktop)\n  (app)/\n    feed/          → Feed de descoberta (foto 100% do card)\n    matches/       → Matches e chat\n    events/        → Eventos, chat por evento, participantes\n    profile/       → Perfil, edição, estatísticas, conquistas\n  api/             → REST API completa (auth, users, swipe, matches, events)\ncomponents/\n  AppShell.tsx     → Layout responsivo (top nav desktop / bottom nav mobile)\ncontext/\n  AppContext.tsx   → Estado global da aplicação\nlib/\n  auth.ts          → JWT / gestão de sessão\n  match-algorithm.ts → Algoritmo de compatibilidade (score 0-99%)\nprisma/\n  schema.prisma   → 10 modelos relacionados\n  seed.ts         → 6 usuários + 6 eventos de exemplo\n```\n\n---\n\n<div align=\"center\">\n\n```\n// projeto local. campus real. lógica própria.\n// em desenvolvimento ativo — Planaltina-GO, 2025.\n```\n\n</div>\n
+<div align="center">
+  <img src="Logo.png" alt="Tinder IESGO Logo" width="180">
+  
+  # Tinder IESGO
+  
+  **App fullstack de conexões sociais universitárias.**
+  
+  [![Status](https://img.shields.io/badge/status-em_desenvolvimento-e53935?style=for-the-badge)](#)
+  [![Next.js](https://img.shields.io/badge/Next.js_14-0a0a0a?style=for-the-badge&logo=next.js&logoColor=white)](#)
+  [![TypeScript](https://img.shields.io/badge/TypeScript-0a0a0a?style=for-the-badge&logo=typescript&logoColor=3178c6)](#)
+  [![Prisma](https://img.shields.io/badge/Prisma-0a0a0a?style=for-the-badge&logo=prisma&logoColor=white)](#)
+  [![MySQL](https://img.shields.io/badge/MySQL-0a0a0a?style=for-the-badge&logo=mysql&logoColor=white)](#)
+  [![Tailwind CSS](https://img.shields.io/badge/Tailwind_CSS-0a0a0a?style=for-the-badge&logo=tailwindcss&logoColor=06b6d4)](#)
+</div>
+
+---
+
+## 📖 Sobre o Projeto
+
+App fullstack de conexões sociais para estudantes do **IESGO — Formosa, GO**. Inspirado na dinâmica de swipes, mas adaptado para o contexto acadêmico: você dá match por curso, turno e interesses, além de participar de eventos exclusivos do campus e conversar em tempo real.
+
+Projeto desenvolvido com foco em **UX Premium**, arquitetura de **API REST** e um algoritmo de compatibilidade próprio.
+
+---
+
+## ✨ Features
+
+### 🔑 Autenticação & Segurança
+*   **Cadastro Guiado:** Fluxo de 15 etapas com stepper visual.
+*   **OTP por E-mail:** Login sem senha usando código de 6 dígitos (expira em 10 min).
+*   **JWT Seguro:** Sessões mantidas em cookies `httpOnly`.
+*   **Fallback Dev:** O OTP é exibido no console/tela quando o SMTP não está configurado.
+
+### 🔥 Feed e Sistema de Match
+*   **UI Imersiva:** Feed de descoberta onde a foto ocupa 100% do card.
+*   **Gestos & Ações:** Arraste para curtir/passar ou use os botões nativos.
+*   **Algoritmo Inteligente:** Score de compatibilidade (0-99%) baseado no seu curso, intenção e interesses.
+*   **Filtros de Busca:** Refine sua busca por gênero e intenção.
+
+### 💬 Social & Interação
+*   **Chat em Tempo Real:** Converse com seus matches de forma fluida.
+*   **Eventos do Campus:** Descubra festas e palestras, confirme presença e veja quem vai.
+*   **Perfil Dinâmico:** Carrossel de fotos, bio, banner editável e estatísticas.
+*   **Gamificação:** Conquistas desbloqueadas conforme o uso do app.
+
+---
+
+## 🛠️ Stack Tecnológico
+
+| Camada | Tecnologia | Detalhe |
+| :--- | :--- | :--- |
+| **Framework** | Next.js 14 | App Router, Server Components e rotas API |
+| **Banco de Dados** | MySQL (Prisma) | Modelagem relacional rodando via Docker |
+| **Autenticação** | JWT + Jose | Cookies blindados e geração de OTP via e-mail |
+| **E-mail** | Nodemailer | Disparo SMTP ou fallback local |
+| **Estilização** | Tailwind CSS | Tema escuro absoluto, design system moderno |
+| **Animações** | Framer Motion | Swipes orgânicos e micro-interações fluidas |
+
+---
+
+## 🚀 Como Rodar Localmente
+
+Siga o passo a passo abaixo para rodar o projeto na sua máquina:
+
+```bash
+# 1. Clone o repositório
+git clone https://github.com/BJR0drigues/Tinder-IESGO.git
+cd Tinder-IESGO
+
+# 2. Instale as dependências
+npm install --legacy-peer-deps
+
+# 3. Configure as variáveis de ambiente
+cp .env.example .env
+# Edite o arquivo .env com suas credenciais do banco e chaves secretas
+
+# 4. Sincronize o banco de dados MySQL
+npx prisma db push
+
+# 5. Popule o banco com dados fictícios para teste
+npm run prisma:seed
+
+# 6. Inicie o servidor
+npm run dev
+```
+
+Acesse a aplicação em `http://localhost:3000`.
+
+---
+
+## ⚙️ Variáveis de Ambiente (`.env`)
+
+Crie o arquivo `.env` na raiz do projeto com o seguinte formato:
+
+```env
+# Conexão com o Banco (MySQL)
+DATABASE_URL="mysql://usuario:senha@localhost:3306/tinder_iesgo"
+
+# Chave do JWT
+JWT_SECRET="sua-chave-secreta-aqui"
+
+# Configuração de E-mail (Opcional em Dev)
+SMTP_HOST="smtp.gmail.com"
+SMTP_PORT="587"
+SMTP_USER="seu-email@gmail.com"
+SMTP_PASS="sua-senha-de-app-gmail"
+SMTP_FROM="Tinder IESGO <seu-email@gmail.com>"
+```
+
+---
+
+<div align="center">
+  <i>Projeto local. Campus real. Lógica própria.</i><br>
+  <strong>Desenvolvido para a disciplina de Estrutura de Dados — IESGO, 2025.</strong>
+</div>
