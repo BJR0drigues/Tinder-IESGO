@@ -111,5 +111,5 @@ SMTP_FROM="Tinder IESGO <seu-email@gmail.com>"
 
 <div align="center">
   <i>Projeto local. Campus real. Lógica própria.</i><br>
-  <strong>Desenvolvido para a disciplina de Estrutura de Dados — IESGO, 2025.</strong>
+  <strong>Desenvolvido para o LADS — IESGO, 2025.</strong>
 </div>
