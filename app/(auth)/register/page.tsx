@@ -1,6 +1,6 @@
 'use client';
 
-import React, { useState, useRef, useEffect } from 'react';
+import React, { useState, useRef, useEffect, Suspense } from 'react';
 import { useRouter, useSearchParams } from 'next/navigation';
 import Image from 'next/image';
 import {
@@ -1222,7 +1222,7 @@ function Step15({
 }
 
 // ── Componente Principal ──────────────────────────────────────────
-export default function RegisterPage() {
+function RegisterPageContent() {
   const router = useRouter();
   const [step, setStep] = useState(1);
   const [mode, setMode] = useState<'create' | 'login'>('create');
@@ -1430,5 +1430,13 @@ export default function RegisterPage() {
         </div>
       </div>
     </div>
+  );
+}
+
+export default function RegisterPage() {
+  return (
+    <Suspense fallback={<div className="h-screen bg-deep flex items-center justify-center"><div className="w-8 h-8 border-2 border-coral/30 border-t-coral rounded-full animate-spin" /></div>}>
+      <RegisterPageContent />
+    </Suspense>
   );
 }
