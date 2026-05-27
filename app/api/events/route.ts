@@ -6,8 +6,13 @@ export const dynamic = 'force-dynamic';
 
 export async function GET() {
   try {
+    const yesterday = new Date(Date.now() - 24 * 60 * 60 * 1000);
+
     const events = await prisma.campusEvent.findMany({
-      where: { isActive: true },
+      where: { 
+        isActive: true,
+        date: { gte: yesterday }
+      },
       orderBy: { date: 'asc' },
     });
     return NextResponse.json({ events: events.map(e => ({
@@ -42,6 +47,7 @@ export async function POST(req: NextRequest) {
         organizer,
         emoji: emoji ?? '📅',
         isActive: true,
+        createdById: session.userId,
       },
     });
 

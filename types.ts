@@ -71,15 +71,17 @@ export interface Achievement {
 export type EventCategory = 'social' | 'academic' | 'sports' | 'cultural';
 
 export interface CampusEvent {
-  id: string;
-  title: string;
+  id:          string;
+  title:       string;
   description: string;
-  location: string;
-  date: number; // timestamp
-  category: EventCategory;
-  organizer: string;
-  attendees: number;
-  emoji: string;
+  location:    string;
+  date:        number; // timestamp in ms
+  category:    string; // "social" | "academic" | "sports" | "cultural"
+  organizer:   string;
+  attendees:   number;
+  emoji?:      string;
+  isActive:    boolean;
+  createdById?: string;
 }
 
 export interface StudyGroup {

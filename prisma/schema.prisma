@@ -72,6 +72,7 @@ model User {
   boosts              ProfileBoost[]
   stats               UserStats?
   eventMessages       EventMessage[]
+  createdEvents       CampusEvent[]       @relation("EventCreator")
 }
 
 // ── OTP (verificação de email/celular) ───────────────────────────
@@ -155,8 +156,10 @@ model CampusEvent {
   attendees   Int      @default(0)
   emoji       String?
   isActive    Boolean  @default(true)
+  createdById String?
   createdAt   DateTime @default(now())
 
+  createdBy   User?    @relation("EventCreator", fields: [createdById], references: [id], onDelete: Cascade)
   attendances EventAttendance[]
   messages    EventMessage[]
 }

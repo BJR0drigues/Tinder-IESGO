@@ -1,7 +1,7 @@
 'use client';
 
 import React, { useState, useEffect, useRef, useCallback } from 'react';
-import { Calendar, MapPin, Users, CheckCircle2, X, Send, Plus, ChevronLeft, MessageCircle } from 'lucide-react';
+import { Calendar, MapPin, Users, CheckCircle2, X, Send, Plus, ChevronLeft, MessageCircle, Trash2 } from 'lucide-react';
 import { useApp } from '@/context/AppContext';
 
 const CATEGORIES = [
@@ -141,6 +141,21 @@ export default function EventsPage() {
     }
   };
 
+  const handleDeleteEvent = async (eventId: string) => {
+    if (!confirm('Tem certeza que deseja excluir este evento?')) return;
+    try {
+      const res = await fetch(`/api/events/${eventId}`, { method: 'DELETE' });
+      if (res.ok) {
+        if (selectedEvent?.id === eventId) setSelectedEvent(null);
+        await refreshEvents();
+      } else {
+        alert('Erro ao excluir evento. Apenas o criador pode excluí-lo.');
+      }
+    } catch (err) {
+      console.error(err);
+    }
+  };
+
   // ── Event detail view ──────────────────────────────────────────────
   if (selectedEvent) {
     const attending = attendedEventIds.includes(selectedEvent.id);
@@ -156,6 +171,15 @@ export default function EventsPage() {
             <p className="font-display font-bold text-white text-sm truncate">{selectedEvent.emoji} {selectedEvent.title}</p>
             <p className="text-xs text-white/40">{formatDate(selectedEvent.date)} · {selectedEvent.location.split(' — ')[0]}</p>
           </div>
+          
+          {selectedEvent.createdById === currentUser?.id && (
+            <button onClick={() => handleDeleteEvent(selectedEvent.id)}
+              className="w-9 h-9 rounded-xl bg-red-500/10 border border-red-500/20 flex items-center justify-center shrink-0 hover:bg-red-500/20 transition-all"
+              title="Excluir evento">
+              <Trash2 className="w-4 h-4 text-red-400" />
+            </button>
+          )}
+
           <button
             onClick={() => handleAttend(selectedEvent.id)}
             className={`flex items-center gap-1.5 px-3 py-1.5 rounded-xl text-xs font-bold transition-all shrink-0
@@ -357,16 +381,25 @@ export default function EventsPage() {
                     </span>
                   </div>
 
-                  <button
-                    onClick={e => { e.stopPropagation(); handleAttend(event.id); }}
-                    className={`flex items-center gap-1.5 px-3.5 py-1.5 rounded-xl text-xs font-bold transition-all
-                      ${attending
-                        ? 'bg-emerald-500/15 border border-emerald-500/30 text-emerald-400'
-                        : 'bg-gradient-brand text-white shadow-glow-coral hover:opacity-90'}`}>
-                    {attending
-                      ? <><CheckCircle2 className="w-3.5 h-3.5" /> Confirmado</>
-                      : <><Calendar className="w-3.5 h-3.5" /> Participar</>}
-                  </button>
+                  <div className="flex gap-2">
+                    {event.createdById === currentUser?.id && (
+                      <button
+                        onClick={e => { e.stopPropagation(); handleDeleteEvent(event.id); }}
+                        className="flex items-center justify-center px-3 py-1.5 rounded-xl bg-red-500/10 border border-red-500/20 text-red-400 hover:bg-red-500/20 transition-all">
+                        <Trash2 className="w-3.5 h-3.5" />
+                      </button>
+                    )}
+                    <button
+                      onClick={e => { e.stopPropagation(); handleAttend(event.id); }}
+                      className={`flex items-center gap-1.5 px-3.5 py-1.5 rounded-xl text-xs font-bold transition-all
+                        ${attending
+                          ? 'bg-emerald-500/15 border border-emerald-500/30 text-emerald-400'
+                          : 'bg-gradient-brand text-white shadow-glow-coral hover:opacity-90'}`}>
+                      {attending
+                        ? <><CheckCircle2 className="w-3.5 h-3.5" /> Confirmado</>
+                        : <><Calendar className="w-3.5 h-3.5" /> Participar</>}
+                    </button>
+                  </div>
                 </div>
               </div>
             </div>
