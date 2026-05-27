@@ -80,7 +80,7 @@ export interface CampusEvent {
   organizer:   string;
   attendees:   number;
   emoji?:      string;
-  isActive:    boolean;
+  isActive?:   boolean;
   createdById?: string;
 }
 
