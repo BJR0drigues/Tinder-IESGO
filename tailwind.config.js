@@ -53,6 +53,7 @@ module.exports = {
         'scale-in':    'scaleIn 0.3s ease-out',
         'orbit':       'orbit 4s linear infinite',
         'pulse-glow':  'pulseGlow 2s ease-in-out infinite',
+        'heartbeat':   'heartbeat 2s ease-in-out infinite',
       },
       keyframes: {
         fadeIn:    { from: { opacity: '0' },                          to: { opacity: '1' } },
@@ -63,6 +64,10 @@ module.exports = {
         pulseGlow: {
           '0%, 100%': { boxShadow: '0 0 20px rgba(240, 112, 112, 0.3)' },
           '50%':      { boxShadow: '0 0 40px rgba(240, 112, 112, 0.6)' },
+        },
+        heartbeat: {
+          '0%, 100%': { transform: 'scale(1)' },
+          '50%':      { transform: 'scale(1.05)' },
         },
       },
     },

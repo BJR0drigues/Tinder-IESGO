@@ -7,7 +7,7 @@ const SECRET = new TextEncoder().encode(
 );
 
 const COOKIE_NAME = 'iesgo_session';
-const EXPIRES_IN  = '7d';
+const EXPIRES_IN  = '30d';
 
 export interface SessionPayload {
   userId: string;
@@ -40,7 +40,7 @@ export async function setSessionCookie(token: string) {
     httpOnly:  true,
     secure:    process.env.SECURE_COOKIES === 'true',
     sameSite:  'lax',
-    maxAge:    60 * 60 * 24 * 7,
+    maxAge:    60 * 60 * 24 * 30,
     path:      '/',
   });
 }

@@ -1,6 +1,6 @@
 'use client';
 
-import React, { useState, useEffect, useCallback } from 'react';
+import React, { useState, useEffect, useCallback, useRef } from 'react';
 import Image from 'next/image';
 import { useRouter } from 'next/navigation';
 import { motion, useMotionValue, useTransform, AnimatePresence } from 'framer-motion';
@@ -104,8 +104,8 @@ function ProfileCard({
         {/* Left / Right tap zones for photo navigation */}
         {user.photos.length > 1 && (
           <>
-            <button onClick={prevPhoto} className="absolute left-0 top-0 w-1/3 h-full z-10 cursor-pointer" aria-label="Foto anterior" />
-            <button onClick={nextPhoto} className="absolute right-0 top-0 w-1/3 h-full z-10 cursor-pointer" aria-label="Próxima foto" />
+            <div onPointerDown={(e) => { e.stopPropagation(); prevPhoto(); }} onClick={(e) => e.stopPropagation()} className="absolute left-0 top-0 w-1/3 h-full z-10 cursor-pointer" aria-label="Foto anterior" />
+            <div onPointerDown={(e) => { e.stopPropagation(); nextPhoto(); }} onClick={(e) => e.stopPropagation()} className="absolute right-0 top-0 w-1/3 h-full z-10 cursor-pointer" aria-label="Próxima foto" />
           </>
         )}
 
@@ -238,15 +238,17 @@ export default function FeedPage() {
   const [loading, setLoading]       = useState(true);
   const [matched, setMatched]       = useState<FeedUser | null>(null);
   const [filterOpen, setFilterOpen] = useState(false);
-  const [courseFilter, setCourseFilter] = useState('');
+  const courseFilterRef = useRef("");
+  const [courseFilter, setCourseFilter] = useState("");
 
-  const fetchFeed = useCallback(async (reset = false, course = courseFilter) => {
+  const fetchFeed = useCallback(async (reset = false, course?: string) => {
+    const activeCourse = course ?? courseFilterRef.current;
     setLoading(true);
     try {
       const params = new URLSearchParams();
-      if (reset) params.set('reset', 'true');
-      if (course) params.set('course', course);
-      const url = `/api/users/feed${params.toString() ? `?${params}` : ''}`;
+      if (reset) params.set("reset", "true");
+      if (activeCourse) params.set("course", activeCourse);
+      const url = `/api/users/feed${params.toString() ? `?${params}` : ""}`;
       const res = await fetch(url);
       if (res.ok) {
         const json = await res.json();
@@ -255,27 +257,27 @@ export default function FeedPage() {
     } finally {
       setLoading(false);
     }
-  }, [courseFilter]);
+  }, []);
 
   const applyFilter = (course: string) => {
+    courseFilterRef.current = course;
     setCourseFilter(course);
     setFilterOpen(false);
     fetchFeed(false, course);
   };
 
-  useEffect(() => { fetchFeed(); }, [fetchFeed]);
-
-  const handleSwipe = async (user: FeedUser, action: 'like' | 'pass' | 'study') => {
+  useEffect(() => {
+    fetchFeed();
+  }, [fetchFeed]);
+  const handleSwipe = async (user: FeedUser, action: "like" | "pass" | "study") => {
     setUsers(prev => prev.filter(u => u.id !== user.id));
     const isMatch = await swipe(user.id, action);
     if (isMatch) setMatched(user);
   };
 
   const topUser = users[0];
-
   return (
     <div className="h-full w-full flex flex-col bg-deep lg:flex-row lg:items-center lg:justify-center">
-      {/* Mobile header */}
       <div className="lg:hidden flex items-center justify-between px-5 pt-5 pb-3 shrink-0">
         <div className="relative w-24 h-8">
           <Image src="/Logo.png" alt="Tinder IESGO" fill className="object-contain" />
@@ -284,13 +286,13 @@ export default function FeedPage() {
           onClick={() => setFilterOpen(true)}
           className={`w-10 h-10 rounded-xl border flex items-center justify-center transition-all
             ${courseFilter
-              ? 'bg-coral/15 border-coral/40 text-coral'
-              : 'bg-surface-secondary border-surface-border text-white/50 hover:text-white'}`}
+              ? "bg-coral/15 border-coral/40 text-coral"
+              : "bg-surface-secondary border-surface-border text-white/50 hover:text-white"}`}
         >
           <SlidersHorizontal className="w-4 h-4" />
         </button>
-      </div>
 
+      </div>
       {/* Filter modal */}
       <AnimatePresence>
         {filterOpen && (

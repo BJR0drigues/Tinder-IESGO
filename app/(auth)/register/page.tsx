@@ -1,7 +1,7 @@
 'use client';
 
-import React, { useState, useRef } from 'react';
-import { useRouter } from 'next/navigation';
+import React, { useState, useRef, useEffect } from 'react';
+import { useRouter, useSearchParams } from 'next/navigation';
 import Image from 'next/image';
 import {
   ArrowLeft, ArrowRight, User, Mail, Phone, Lock,
@@ -106,7 +106,7 @@ interface FormData {
   notifLike:    boolean;
 }
 
-const TOTAL_STEPS = 13; // telas 1-13 (1=splash, 14=criado, 15=revisão são finais)
+const TOTAL_STEPS = 12; // telas 1-12 (1=splash, 13=criado)
 
 // ── Componentes auxiliares ────────────────────────────────────────
 function ProgressBar({ step }: { step: number }) {
@@ -139,7 +139,7 @@ function StepHeader({
 
       {showLogo ? (
         <div className="relative w-20 h-10">
-          <Image src="/Logo.png" alt="Tinder IESGO" fill className="object-contain" />
+          <Image src="/Logo.png" alt="Tinder IESGO" fill className="object-contain animate-heartbeat" />
         </div>
       ) : (
         <span className="text-sm text-white/40 font-medium">
@@ -242,7 +242,7 @@ function Step1({ onNext, onLogin }: { onNext: () => void; onLogin: () => void })
             src="/Logo.png"
             alt="Tinder IESGO"
             fill
-            className="object-contain drop-shadow-[0_0_40px_rgba(240,112,112,0.6)] animate-pulse-glow"
+            className="object-contain drop-shadow-[0_0_40px_rgba(240,112,112,0.6)] animate-heartbeat"
           />
         </div>
 
@@ -378,55 +378,30 @@ function Step3({
       <ProgressBar step={3} />
       <div className="flex-1 mt-8">
         <h2 className="font-display font-extrabold text-3xl text-white mb-1">
-          Celular ou <span className="text-coral">e-mail?</span>
+          Qual o seu <span className="text-coral">e-mail?</span>
         </h2>
         <p className="text-white/40 text-sm mb-8">
           Usaremos para verificar sua conta e enviar notificações importantes.
         </p>
 
-        {/* Toggle */}
-        <div className="flex gap-2 mb-6">
-          {(['phone', 'email'] as const).map(t => (
-            <button
-              key={t}
-              type="button"
-              onClick={() => setData({ contactType: t, contact: '' })}
-              className={`flex-1 py-3 rounded-xl flex items-center justify-center gap-2 font-semibold text-sm border transition-all
-                ${data.contactType === t
-                  ? 'bg-coral/15 border-coral text-coral'
-                  : 'bg-surface-secondary border-surface-border text-white/40 hover:border-purple/40'
-                }`}
-            >
-              {t === 'phone' ? <Phone className="w-4 h-4" /> : <Mail className="w-4 h-4" />}
-              {t === 'phone' ? 'Celular' : 'E-mail'}
-            </button>
-          ))}
-        </div>
-
         {/* Input */}
         <div className="space-y-3">
           <label className="text-xs font-semibold text-white/40 uppercase tracking-wider block">
-            {data.contactType === 'phone' ? 'NÚMERO DE CELULAR' : 'E-MAIL'}
+            E-MAIL
           </label>
           <div className="relative flex">
-            {data.contactType === 'phone' && (
-              <div className="flex items-center gap-1.5 px-3 bg-surface-secondary border border-r-0 border-surface-border rounded-l-xl text-sm text-white/50">
-                🇧🇷 <span>+55</span>
-              </div>
-            )}
             <input
-              type={data.contactType === 'phone' ? 'tel' : 'email'}
-              placeholder={data.contactType === 'phone' ? '(62) 9 9000-0000' : 'exemplo@email.com'}
+              type="email"
+              placeholder="exemplo@email.com"
               value={data.contact}
               onChange={e => setData({ contact: e.target.value })}
-              className={`flex-1 px-4 py-4 bg-surface-input border border-surface-border text-white
+              className="flex-1 px-4 py-4 rounded-xl bg-surface-input border border-surface-border text-white
                 placeholder-white/20 focus:border-coral focus:ring-2 focus:ring-coral/20 outline-none
-                font-medium transition-all
-                ${data.contactType === 'phone' ? 'rounded-r-xl' : 'rounded-xl'}`}
+                font-medium transition-all"
             />
           </div>
           <p className="text-xs text-white/30 flex items-center gap-1.5">
-            🔒 Seu {data.contactType === 'phone' ? 'número' : 'email'} nunca é compartilhado. Usado apenas para verificação de identidade.
+            🔒 Seu e-mail nunca é compartilhado. Usado apenas para verificação de identidade.
           </p>
           {error && <p className="text-sm text-red-400">{error}</p>}
         </div>
@@ -493,6 +468,16 @@ function Step4({
               maxLength={1}
               value={data.otp[i] ?? ''}
               onChange={e => handleDigit(i, e.target.value)}
+              onPaste={e => {
+                e.preventDefault();
+                const pasted = e.clipboardData.getData('text').replace(/\D/g, '');
+                if (pasted) {
+                  const newOtp = (data.otp.slice(0, i) + pasted).slice(0, 6);
+                  setData({ otp: newOtp });
+                  const nextFocus = Math.min(i + pasted.length, 5);
+                  inputRefs.current[nextFocus]?.focus();
+                }
+              }}
               onKeyDown={e => {
                 if (e.key === 'Backspace' && !data.otp[i] && i > 0) {
                   inputRefs.current[i - 1]?.focus();
@@ -995,11 +980,11 @@ function Step11({
   );
 }
 
-// ── Tela 12: Preferências de Busca ────────────────────────────────
+// ── Tela 12: Preferências de busca ────────────────────────────────
 function Step12({
-  data, setData, onNext, onBack,
+  data, setData, onNext, onBack, loading,
 }: {
-  data: FormData; setData: (d: Partial<FormData>) => void; onNext: () => void; onBack: () => void;
+  data: FormData; setData: (d: Partial<FormData>) => void; onNext: () => void; onBack: () => void; loading?: boolean;
 }) {
   return (
     <div className="flex flex-col h-full px-6 py-4 animate-slide-up">
@@ -1013,39 +998,6 @@ function Step12({
           <p className="text-white/40 text-sm">
             Defina quem você quer ver. Filtra os perfis mostrados para você.
           </p>
-        </div>
-
-        {/* Localização */}
-        <div>
-          <label className="text-xs font-semibold text-white/40 uppercase tracking-wider mb-2 flex items-center gap-1.5">
-            <MapPin className="w-3.5 h-3.5" /> LOCALIZAÇÃO
-          </label>
-          <div className="flex items-center gap-3 px-4 py-3.5 rounded-xl bg-surface-secondary border border-surface-border">
-            <span className="text-base">📍</span>
-            <div>
-              <p className="text-sm text-white font-medium">Formosa, GO</p>
-              <p className="text-xs text-white/40">IESGO — localização padrão</p>
-            </div>
-          </div>
-        </div>
-
-        {/* Distância */}
-        <div>
-          <div className="flex justify-between items-center mb-3">
-            <label className="text-xs font-semibold text-white/40 uppercase tracking-wider">DISTÂNCIA MÁXIMA</label>
-            <span className="text-sm font-bold text-coral">{data.maxDistance} km</span>
-          </div>
-          <input
-            type="range" min={2} max={100} value={data.maxDistance}
-            onChange={e => setData({ maxDistance: Number(e.target.value) })}
-            className="w-full h-1.5 rounded-full appearance-none bg-surface-border [&::-webkit-slider-thumb]:appearance-none
-              [&::-webkit-slider-thumb]:w-5 [&::-webkit-slider-thumb]:h-5 [&::-webkit-slider-thumb]:rounded-full
-              [&::-webkit-slider-thumb]:bg-coral [&::-webkit-slider-thumb]:cursor-pointer [&::-webkit-slider-thumb]:shadow-glow-coral"
-            style={{ background: `linear-gradient(to right, #F07070 0%, #F07070 ${((data.maxDistance - 2) / 98) * 100}%, #2e2a42 ${((data.maxDistance - 2) / 98) * 100}%, #2e2a42 100%)` }}
-          />
-          <div className="flex justify-between text-xs text-white/30 mt-1">
-            <span>2 km</span><span>100 km</span>
-          </div>
         </div>
 
         {/* Faixa de Idade */}
@@ -1102,117 +1054,14 @@ function Step12({
           </div>
         </div>
 
-        {/* Turno */}
-        <div>
-          <label className="text-xs font-semibold text-white/40 uppercase tracking-wider mb-2 flex items-center gap-1.5 block">
-            🕐 TURNO
-          </label>
-          <div className="grid grid-cols-2 gap-2">
-            {(['Matutino', 'Vespertino', 'Noturno', 'Integral'] as const).map(t => (
-              <button
-                key={t} type="button"
-                onClick={() => setData({ shift: t })}
-                className={`py-3 rounded-xl border text-sm font-semibold transition-all
-                  ${data.shift === t
-                    ? 'border-coral bg-coral/15 text-coral'
-                    : 'border-surface-border bg-surface-secondary text-white/50 hover:border-purple/40'}`}
-              >
-                {t}
-              </button>
-            ))}
-          </div>
-        </div>
 
-        {/* Semestre */}
-        <div>
-          <div className="flex justify-between items-center mb-2">
-            <label className="text-xs font-semibold text-white/40 uppercase tracking-wider">
-              📚 SEMESTRE ATUAL
-            </label>
-            <span className="text-sm font-bold text-coral">{data.semester}º</span>
-          </div>
-          <input
-            type="range" min={1} max={10} value={data.semester}
-            onChange={e => setData({ semester: Number(e.target.value) })}
-            className="w-full h-1.5 rounded-full appearance-none bg-surface-border
-              [&::-webkit-slider-thumb]:appearance-none [&::-webkit-slider-thumb]:w-5
-              [&::-webkit-slider-thumb]:h-5 [&::-webkit-slider-thumb]:rounded-full
-              [&::-webkit-slider-thumb]:bg-coral [&::-webkit-slider-thumb]:cursor-pointer
-              [&::-webkit-slider-thumb]:shadow-glow-coral"
-            style={{ background: `linear-gradient(to right, #F07070 0%, #F07070 ${((data.semester - 1) / 9) * 100}%, #2e2a42 ${((data.semester - 1) / 9) * 100}%, #2e2a42 100%)` }}
-          />
-          <div className="flex justify-between text-xs text-white/30 mt-1">
-            <span>1º</span><span>10º</span>
-          </div>
-        </div>
+
       </div>
-
-      <ContinueBtn onClick={onNext} label="Continuar →" />
+      <ContinueBtn onClick={onNext} loading={loading} label="Criar Perfil 🎉" />
     </div>
   );
 }
 
-// ── Tela 13: Notificações ─────────────────────────────────────────
-function Step13({
-  data, setData, onNext, onBack, loading,
-}: {
-  data: FormData; setData: (d: Partial<FormData>) => void; onNext: () => void;
-  onBack: () => void; loading: boolean;
-}) {
-  const notifs = [
-    { key: 'notifMatch',   emoji: '💘', label: 'Novo match encontrado',   value: data.notifMatch },
-    { key: 'notifMessage', emoji: '💬', label: 'Nova mensagem recebida',  value: data.notifMessage },
-    { key: 'notifLike',    emoji: '⭐', label: 'Alguém curtiu seu perfil', value: data.notifLike },
-  ] as const;
-
-  return (
-    <div className="flex flex-col h-full px-6 py-4 animate-slide-up">
-      <StepHeader step={13} total={TOTAL_STEPS} onBack={onBack} showLogo />
-      <ProgressBar step={13} />
-      <div className="flex-1 mt-8 flex flex-col items-center">
-        <div className="w-20 h-20 rounded-2xl bg-gradient-brand flex items-center justify-center mb-6 text-4xl shadow-glow-coral">
-          🔔
-        </div>
-        <h2 className="font-display font-extrabold text-3xl text-white text-center mb-2">
-          Ativar <span className="text-coral">notificações?</span>
-        </h2>
-        <p className="text-white/40 text-sm text-center mb-8">
-          Nunca perca um match ou mensagem. Você controla o que recebe nas configurações.
-        </p>
-
-        <div className="w-full space-y-3 mb-6">
-          {notifs.map(({ key, emoji, label, value }) => (
-            <div key={key} className="flex items-center justify-between p-4 rounded-xl bg-surface-secondary border border-surface-border">
-              <div className="flex items-center gap-3">
-                <span className="text-xl">{emoji}</span>
-                <span className="text-sm text-white/80 font-medium">{label}</span>
-              </div>
-              <button
-                type="button"
-                onClick={() => setData({ [key]: !value } as Partial<FormData>)}
-                className={`relative w-11 h-6 rounded-full transition-colors ${value ? 'bg-coral' : 'bg-surface-border'}`}
-              >
-                <span className={`absolute top-0.5 w-5 h-5 rounded-full bg-white shadow transition-all
-                  ${value ? 'left-5' : 'left-0.5'}`} />
-              </button>
-            </div>
-          ))}
-        </div>
-      </div>
-
-      <div className="space-y-2.5">
-        <ContinueBtn onClick={onNext} loading={loading} label="Ativar notificações 🔔" />
-        <button
-          type="button"
-          onClick={onNext}
-          className="w-full text-sm text-white/30 hover:text-white/50 py-2 transition-colors underline"
-        >
-          Não, obrigado
-        </button>
-      </div>
-    </div>
-  );
-}
 
 // ── Tela 14: Perfil Criado ────────────────────────────────────────
 function Step14({
@@ -1399,6 +1248,15 @@ export default function RegisterPage() {
   const update = (partial: Partial<FormData>) =>
     setFormData(prev => ({ ...prev, ...partial }));
 
+  const searchParams = useSearchParams();
+  useEffect(() => {
+    const contact = searchParams.get('contact');
+    const type = searchParams.get('type') as 'email' | 'phone' | null;
+    if (contact && type) {
+      update({ contact, contactType: type });
+    }
+  }, [searchParams]);
+
   const next = () => { setError(''); setStep(s => s + 1); };
   const back = () => { setError(''); setStep(s => s - 1); };
 
@@ -1525,9 +1383,8 @@ export default function RegisterPage() {
       {step === 9  && <Step9  data={formData} setData={update} onNext={next} onBack={back} />}
       {step === 10 && <Step10 data={formData} setData={update} onNext={next} onBack={back} />}
       {step === 11 && <Step11 data={formData} setData={update} onNext={next} onBack={back} />}
-      {step === 12 && <Step12 data={formData} setData={update} onNext={next} onBack={back} />}
-      {step === 13 && <Step13 data={formData} setData={update} onNext={handleRegister} onBack={back} loading={loading} />}
-      {step === 14 && <Step14 data={formData} onNext={handleFinish} />}
+      {step === 12 && <Step12 data={formData} setData={update} onNext={handleRegister} onBack={back} loading={loading} />}
+      {step === 13 && <Step14 data={formData} onNext={handleFinish} />}
     </>
   );
 
@@ -1544,7 +1401,7 @@ export default function RegisterPage() {
         {/* Logo */}
         <div className="relative w-52 h-52 z-10">
           <Image src="/Logo.png" alt="Tinder IESGO" fill
-            className="object-contain drop-shadow-[0_0_50px_rgba(255,255,255,0.3)]" />
+            className="object-contain drop-shadow-[0_0_50px_rgba(255,255,255,0.3)] animate-heartbeat" />
         </div>
         <div className="text-center z-10">
           <p className="text-white/80 text-xl font-semibold leading-relaxed">

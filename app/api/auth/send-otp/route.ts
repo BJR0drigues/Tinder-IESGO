@@ -4,7 +4,7 @@ import { generateOTP, sendOTPEmail, logOTPDev } from '@/lib/email';
 
 export async function POST(req: NextRequest) {
   try {
-    const { contact, type } = await req.json() as { contact: string; type: 'email' | 'phone' };
+    const { contact, type, isLoginAttempt } = await req.json() as { contact: string; type: 'email' | 'phone'; isLoginAttempt?: boolean };
 
     if (!contact || !type) {
       return NextResponse.json({ error: 'Contato e tipo são obrigatórios.' }, { status: 400 });
@@ -12,6 +12,15 @@ export async function POST(req: NextRequest) {
 
     if (type === 'email' && !contact.includes('@')) {
       return NextResponse.json({ error: 'Email inválido.' }, { status: 400 });
+    }
+
+    if (isLoginAttempt) {
+      const existingUser = await prisma.user.findFirst({
+        where: type === 'email' ? { email: contact } : { phone: contact },
+      });
+      if (!existingUser) {
+        return NextResponse.json({ success: false, notFound: true });
+      }
     }
 
     // Rate limit: no máximo 1 OTP por minuto por contato
@@ -46,7 +55,8 @@ export async function POST(req: NextRequest) {
     if (type === 'email') {
       try {
         await sendOTPEmail(contact, code);
-      } catch {
+      } catch (error) {
+        console.error('[SMTP_ERROR]', error);
         // Se SMTP não configurado, apenas loga no dev
         logOTPDev(contact, code);
       }
@@ -55,7 +65,7 @@ export async function POST(req: NextRequest) {
       logOTPDev(contact, code);
     }
 
-    const showCode = process.env.NODE_ENV !== 'production' || process.env.DEMO_MODE === 'true';
+    const showCode = process.env.DEMO_MODE === 'true';
     return NextResponse.json({
       success: true,
       message: 'Código enviado!',

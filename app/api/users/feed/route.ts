@@ -108,14 +108,14 @@ export async function GET(req: NextRequest) {
     // Ordenar pelo algoritmo de compatibilidade
     const ranked = sortFeedByCompatibility(currentProfile, candidates);
 
-    // Filtro por interesse (pós-compatibilidade)
     const filtered = interestFilter
       ? ranked.filter(u => u.interests.includes(interestFilter))
       : ranked;
 
-    // Montar resposta completa
+    const rawMap = new Map(rawUsers.map(u => [u.id, u]));
+
     const feedUsers = filtered.map(ranked => {
-      const raw = rawUsers.find(u => u.id === ranked.id)!;
+      const raw = rawMap.get(ranked.id)!;
       return {
         ...raw,
         interests:  safeJson(raw.interests),

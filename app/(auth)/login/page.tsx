@@ -22,10 +22,14 @@ export default function LoginPage() {
       const res = await fetch('/api/auth/send-otp', {
         method:  'POST',
         headers: { 'Content-Type': 'application/json' },
-        body:    JSON.stringify({ contact, type: contactType }),
+        body:    JSON.stringify({ contact, type: contactType, isLoginAttempt: true }),
       });
       const json = await res.json();
       if (!res.ok) { setError(json.error ?? 'Erro ao enviar código.'); return; }
+      if (json.notFound) {
+        router.push(`/register?contact=${encodeURIComponent(contact)}&type=${contactType}`);
+        return;
+      }
       if (json.devCode) setDevCode(json.devCode);
       setStep('otp');
     } finally { setLoading(false); }
@@ -43,7 +47,7 @@ export default function LoginPage() {
       if (!res.ok) { setError(json.error ?? 'Código inválido.'); return; }
 
       if (json.isNewUser) {
-        router.push('/register');
+        setError('Conta não encontrada. Por favor, crie uma conta.');
         return;
       }
 
@@ -79,7 +83,7 @@ export default function LoginPage() {
         ))}
         <div className="relative w-52 h-52 z-10">
           <Image src="/Logo.png" alt="Tinder IESGO" fill
-            className="object-contain drop-shadow-[0_0_50px_rgba(255,255,255,0.3)]" />
+            className="object-contain drop-shadow-[0_0_50px_rgba(255,255,255,0.3)] animate-heartbeat" />
         </div>
         <div className="text-center z-10">
           <p className="text-white/80 text-xl font-semibold leading-relaxed">
@@ -95,32 +99,16 @@ export default function LoginPage() {
         {/* Header */}
         <div className="text-center mb-10">
           <div className="mx-auto mb-4 w-24 h-24 relative">
-            <Image src="/Logo.png" alt="Tinder IESGO" fill className="object-contain drop-shadow-[0_0_16px_rgba(240,112,112,0.5)]" />
+            <Image src="/Logo.png" alt="Tinder IESGO" fill className="object-contain drop-shadow-[0_0_16px_rgba(240,112,112,0.5)] animate-heartbeat" />
           </div>
           <p className="text-white/40 text-sm mt-1">Bem-vindo de volta!</p>
         </div>
 
         {step === 'contact' && (
           <div className="space-y-5 animate-fade-in">
-            {/* Toggle */}
-            <div className="flex gap-2">
-              {(['email', 'phone'] as const).map(t => (
-                <button key={t} type="button"
-                  onClick={() => { setContactType(t); setContact(''); }}
-                  className={`flex-1 py-3 rounded-xl flex items-center justify-center gap-2 font-semibold text-sm border transition-all
-                    ${contactType === t
-                      ? 'bg-coral/15 border-coral text-coral'
-                      : 'bg-surface-secondary border-surface-border text-white/40'}`}
-                >
-                  {t === 'email' ? <Mail className="w-4 h-4" /> : <Phone className="w-4 h-4" />}
-                  {t === 'email' ? 'E-mail' : 'Celular'}
-                </button>
-              ))}
-            </div>
-
             <input
-              type={contactType === 'email' ? 'email' : 'tel'}
-              placeholder={contactType === 'email' ? 'seu@email.com' : '(62) 9 0000-0000'}
+              type="email"
+              placeholder="seu@email.com"
               value={contact}
               onChange={e => setContact(e.target.value)}
               className="w-full px-4 py-4 rounded-xl bg-surface-input border border-surface-border
@@ -178,6 +166,16 @@ export default function LoginPage() {
                   type="text" inputMode="numeric" maxLength={1}
                   value={otp[i] ?? ''}
                   onChange={e => handleDigit(i, e.target.value)}
+                  onPaste={e => {
+                    e.preventDefault();
+                    const pasted = e.clipboardData.getData('text').replace(/\D/g, '');
+                    if (pasted) {
+                      const newOtp = (otp.slice(0, i) + pasted).slice(0, 6);
+                      setOtp(newOtp);
+                      const nextFocus = Math.min(i + pasted.length, 5);
+                      inputRefs.current[nextFocus]?.focus();
+                    }
+                  }}
                   onKeyDown={e => { if (e.key === 'Backspace' && !otp[i] && i > 0) inputRefs.current[i - 1]?.focus(); }}
                   className={`w-12 h-14 text-center text-2xl font-display font-bold rounded-xl border
                     bg-surface-input outline-none transition-all

@@ -84,7 +84,7 @@ npm run prisma:seed
 npm run dev
 ```
 
-Acesse a aplicação em `http://localhost:3000`.
+Acesse a aplicação em `http://localhost:3001`.
 
 ---
 

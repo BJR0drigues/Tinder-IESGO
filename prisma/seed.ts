@@ -147,6 +147,40 @@ async function main() {
     },
   ];
 
+  const womenNames = ['Amanda', 'Beatriz', 'Camila', 'Daniela', 'Eduarda', 'Fernanda', 'Gabriela', 'Helena', 'Isabela', 'Juliana', 'Karina', 'Larissa', 'Mariana', 'Natalia', 'Olivia'];
+  const womenLastNames = ['Silva', 'Santos', 'Oliveira', 'Souza', 'Rodrigues', 'Ferreira', 'Alves', 'Pereira', 'Lima', 'Gomes', 'Costa', 'Ribeiro', 'Martins', 'Carvalho', 'Almeida'];
+
+  for (let i = 1; i <= 15; i++) {
+    seedUsers.push({
+      email: `teste.mulher${i}@iesgo.edu.br`,
+      firstName: womenNames[i - 1],
+      lastName: womenLastNames[i - 1],
+      dateOfBirth: new Date(`200${Math.floor(Math.random() * 5)}-0${Math.floor(Math.random() * 8) + 1}-10`),
+      gender: 'Mulher',
+      pronouns: 'she/her',
+      bio: `Testando o carrossel com múltiplas fotos. Perfil #${i} ✨`,
+      interests: JSON.stringify(['Música', 'Viagens', 'Café', 'Festas', 'Livros'].sort(() => 0.5 - Math.random()).slice(0, 3)),
+      photos: JSON.stringify([
+        `https://picsum.photos/400/600?random=${i * 10 + 1}`,
+        `https://picsum.photos/400/600?random=${i * 10 + 2}`,
+        `https://picsum.photos/400/600?random=${i * 10 + 3}`,
+        `https://picsum.photos/400/600?random=${i * 10 + 4}`,
+      ]),
+      lookingFor: JSON.stringify(['Homens', 'Mulheres']),
+      course: 'Enfermagem',
+      semester: Math.floor(Math.random() * 8) + 1,
+      shift: 'Noturno',
+      intention: 'Casual / Ver o que rola',
+      city: 'Formosa',
+      state: 'GO',
+      maxDistance: 50,
+      minAge: 18,
+      maxAge: 35,
+      verified: true,
+      showGender: true,
+    });
+  }
+
   for (const u of seedUsers) {
     const existing = await prisma.user.findFirst({ where: { email: u.email } });
     if (!existing) {
